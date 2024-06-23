@@ -7,7 +7,7 @@ const Boards = () => {
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Boards</h2>
       </div>
-      <div className="board-container">
+      <div className="board-container scrollable-container">
         <div className="board-box">
           <div className="flex items-center mb-4">
             <div className="board-circle to-do"></div>

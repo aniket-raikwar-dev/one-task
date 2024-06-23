@@ -361,6 +361,29 @@ nav {
   gap: 45px;
 }
 
+.scrollable-container {
+   width: 100%;
+   height: 78vh !important;
+   overflow-y: scroll;
+   /* padding-right: 5px; */
+}
+
+.scrollable-container::-webkit-scrollbar {
+  width: 4px; /* Very thin scrollbar */
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  background: transparent /* No background for track */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: #ececec; /* Thumb color */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+  background: #ececec; /* Thumb color on hover */
+}
+
 .project-box {
   width: 100%;
   display: flex;
@@ -513,12 +536,14 @@ nav {
   text-align: center;
   margin-top: 10px;
   height: 380px;
-  /* background-color: red; */
+}
+
+.big-gantt {
+  height: 75vh !important;
 }
 
 .gantt-container {
   height: 380px;
-  /* background-color: blue; */
 }
 
 .gantt .tick {
@@ -846,6 +871,11 @@ nav {
 .fz-12 {
   font-size: 12.5px;
 }
+
+.custom-table-row {
+  height: 80px; 
+}
+
 
 @media only screen and (max-width: 767px) {
   .auth-left {

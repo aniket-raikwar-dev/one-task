@@ -76,8 +76,8 @@ const tasks = [
   },
 ];
 
-const TimelineView = ({ timelineView, smallView }) => {
-  console.log("simplified timeline: ", smallView);
+const TimelineView = ({ timelineView, isSmallView }) => {
+  console.log("simplified timeline: ", isSmallView);
   useEffect(() => {
     new Gantt("#gantt", tasks, {
       step: 24,
@@ -91,7 +91,7 @@ const TimelineView = ({ timelineView, smallView }) => {
   }, [timelineView]);
 
   return (
-    <div id="app-gantt">
+    <div id="app-gantt" className={!isSmallView ? "big-gantt" : ""}>
       <svg id="gantt"></svg>
     </div>
   );

@@ -11,8 +11,8 @@ import Boards from "./pages/Boards";
 import Timeline from "./pages/Timeline";
 import Backlogs from "./pages/Backlogs";
 import Teams from "./pages/Teams";
-import Calendar from "./pages/Calendar";
 import Signup from "./pages/Signup";
+import CalendarPage from "./pages/Calendar";
 
 const router = createBrowserRouter([
   {
@@ -41,7 +41,7 @@ const router = createBrowserRouter([
       },
       {
         path: "calendar",
-        element: <Calendar />,
+        element: <CalendarPage />,
       },
     ],
   },

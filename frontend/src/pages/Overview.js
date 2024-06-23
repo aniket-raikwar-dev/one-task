@@ -36,22 +36,24 @@ const Overview = () => {
         </div>
       </div>
 
-      <TimelineView timelineView={timelineView} smallView={true} />
-      <div className="flex justify-between mt-4">
-        <div className="card-container">
-          <div className="flex justify-between">
-            <h2 className="ovr-title">To Start</h2>
-            <div className="ovr-title-right">3</div>
+      <div className="scrollable-container">
+        <TimelineView timelineView={timelineView} isSmallView={true} />
+        <div className="flex justify-between mt-4">
+          <div className="card-container">
+            <div className="flex justify-between">
+              <h2 className="ovr-title">To Start</h2>
+              <div className="ovr-title-right">3</div>
+            </div>
+            <div className="ovr-card-container">
+              <OverviewCard />
+              <OverviewCard />
+              <OverviewCard />
+            </div>
           </div>
-          <div className="ovr-card-container">
-            <OverviewCard />
-            <OverviewCard />
-            <OverviewCard />
+          <div className="ovr-table-container">
+            <h2 className="ovr-title">In Progress</h2>
+            <TableView />
           </div>
-        </div>
-        <div className="ovr-table-container">
-          <h2 className="ovr-title">In Progress</h2>
-          <TableView />
         </div>
       </div>
     </div>

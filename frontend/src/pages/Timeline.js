@@ -7,7 +7,7 @@ const Timeline = () => {
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Timeline</h2>
       </div>
-      <TimelineView smallView={false} />
+      <TimelineView isSmallView={false} />
     </div>
   );
 };

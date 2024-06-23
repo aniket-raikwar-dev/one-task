@@ -10,9 +10,12 @@ const Project = () => {
         <div className="btn-create-project">Create New Project</div>
       </div>
 
-      <div className="project-grid-box">
+      <div className="project-grid-box scrollable-container">
         <ProjectCard />
         <ProjectCard />
+       
+       
+       
       </div>
     </div>
   );
