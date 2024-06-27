@@ -877,6 +877,64 @@ nav {
 }
 
 
+.calendar-box {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.fc-daygrid-day-number {
+  padding: 10px 15px !important;
+}
+
+.fc-day-today {
+  background-color: #f3f5ff !important;
+  font-weight: 600;
+}
+
+.fc-col-header {
+  height: 40px !important;
+}
+
+ .fc-col-header-cell-cushion {
+  padding: 10px 4px !important;
+ }
+
+ .fullcalendar {
+  width: 100% !important;
+}
+
+.cal-view-btn {
+  width: 200px;
+}
+
+.date-box {
+  display: flex;
+  border: 0.5px solid #bcbcbc;
+  background-color: #fff;
+  width: 200px;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 10px;
+  padding: 3px;
+
+  .btn {
+    width: 40px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3030fb;
+    cursor: pointer;
+
+    svg {
+      width: 20px;
+    }
+  }
+}
+.fc {
+  background-color: #fff;
+}
+
 @media only screen and (max-width: 767px) {
   .auth-left {
     width: 100%;

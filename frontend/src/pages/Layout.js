@@ -11,7 +11,6 @@ import Backlogs from "./Backlogs";
 import Teams from "./Teams";
 import CalendarPage from "./Calendar";
 
-const { Header, Sider, Content } = Layout;
 
 const LayoutPage = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -28,7 +27,7 @@ const LayoutPage = () => {
             <Route path="/timeline" element={<Timeline />} />
             <Route path="/backlogs" element={<Backlogs />} />
             <Route path="/teams" element={<Teams />} />
-            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/calendar" element={<CalendarPage collapsed={collapsed} />} />
           </Routes>
         </div>
       </Layout>
