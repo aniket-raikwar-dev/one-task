@@ -7,46 +7,34 @@ const BoardCard = () => {
       <div className="board-card-top">
         <div className="flex justify-between">
           <div className="date">12.01.2024</div>
-          <div className="tech">Frontend</div>
+          <div className="tech">High</div>
         </div>
 
         <h3 className="task-text">
           FE: Replacement of Node JS with Java and Go Language
         </h3>
 
-        {/* <div className="project-owner mar-t-6">
-        <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M20 22H18V20C18 18.3431 16.6569 17 15 17H9C7.34315 17 6 18.3431 6 20V22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13ZM12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"></path>
-          </svg>
-        </div>
+       
+          <div className="project-owner mar-t-6 mb-1">
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"></path>
+              </svg>
+            </div>
 
-        <p>
-          Assignee: <span>Brad Johnson</span>
-        </p>
-      </div> */}
-        <div className="project-owner mar-t-6 mb-1">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM13 12H17V14H11V7H13V12Z"></path>
-            </svg>
+            <p>
+              Estimation: <span>3 SP</span>
+            </p>
           </div>
+       
 
-          <p>
-            Estimation: <span>3 SP</span>
-          </p>
-        </div>
-        <div className="ovr-sprint est mt-2">
+        <div className="tech-box mt-3">
           <div className="circle"></div>
-          Sprint: MXY-245
+           Frontend Stack
         </div>
       </div>
 
