@@ -621,65 +621,13 @@ nav {
   flex-direction: column;
   width: 100%;
   align-items: center;
+  margin-top: 20px;
 }
-
 .ovr-card {
-  width: 100%;
-  background-color: transparent;
-  height: 160px;
-  margin-top: 15px;
-  cursor: pointer;
+  height: 150px !important;
+  margin-bottom: 20px;
 }
 
-.ovr-top {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  background-color: transparent;
-  height: 18%;
-}
-.ovr-top-1,
-.ovr-top-2 {
-  height: 100%;
-  width: 50%;
-  background-color: transparent;
-}
-
-.ovr-top-1 {
-  position: relative;
-  background-color: #f4f4f4;
-  display: flex;
-  align-items: center;
-  color: #1a1a1a;
-  padding-left: 15px;
-  letter-spacing: 1px;
-  font-size: 12px;
-}
-
-.ovr-top-1:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-top: 29px solid white;
-  border-left: 29px solid #f4f4f4;
-  width: 0;
-}
-
-.ovr-card-content {
-  height: 82%;
-  background-color: #f8f8f8;
-  color: #131313;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border: 0.5px solid #bcbcbc;
-
-  .heading {
-    font-size: 13px;
-  }
-}
 .ovr-sprint, .tech-box {
   width: 45%;
   height: 27px;
@@ -863,7 +811,7 @@ nav {
 .board-card-top {
   height: 78%;
 }
-.board-card-bottom {
+.board-card-bottom, .ovr-card-bottom {
   border-top: 0.5px solid #e8e8e8;
   height: 22%;
   display: flex;
@@ -882,6 +830,12 @@ nav {
       color: #5a5a5a;
     }
   }
+}
+.ovr-card-top {
+  height: 75%;
+}
+.ovr-card-bottom {
+  height: 25%;
 }
 
 .fz-12 {
