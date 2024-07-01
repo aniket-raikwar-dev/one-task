@@ -10,6 +10,8 @@ import Timeline from "./Timeline";
 import Backlogs from "./Backlogs";
 import Teams from "./Teams";
 import CalendarPage from "./Calendar";
+import CreateNewProject from "./CreateNewProject";
+import OnBoarding from "./OnBoarding";
 
 
 const LayoutPage = () => {
@@ -28,6 +30,8 @@ const LayoutPage = () => {
             <Route path="/backlogs" element={<Backlogs />} />
             <Route path="/teams" element={<Teams />} />
             <Route path="/calendar" element={<CalendarPage collapsed={collapsed} />} />
+            <Route path="/create-new-project" element={<CreateNewProject />} />
+            <Route path="/onboarding" element={<OnBoarding />} />
           </Routes>
         </div>
       </Layout>

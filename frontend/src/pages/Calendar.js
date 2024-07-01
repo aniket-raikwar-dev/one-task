@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
+import SearchBar from "../components/SearchBar";
 
 const CalendarPage = ({ collapsed }) => {
   const calendarRef = useRef(null);
@@ -16,6 +17,7 @@ const CalendarPage = ({ collapsed }) => {
     setCalendarView(view);
     if (calendarRef.current) {
       calendarRef.current.getApi().changeView(view);
+      setCalendarDate(calendarRef.current.getApi().view.title);
     }
   };
 
@@ -59,7 +61,8 @@ const CalendarPage = ({ collapsed }) => {
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Calendar Page</h2>
         <div className="flex">
-          <div className="date-box">
+          <SearchBar />
+          <div className="date-box ml-3">
             <div className="btn" id="calendar-prev-btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

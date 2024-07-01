@@ -515,17 +515,68 @@ nav {
   font-weight: 500;
 }
 
-.btn-create-project {
-  padding: 8px 15px;
-  background-color: #3030fb;
+.btn-create {
+  padding: 0px 13px 0px 10px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
   cursor: pointer;
-  color: #fff;
-
+  font-size: 13px;
+  letter-spacing: 0.3px;
+   border: 0.5px solid #bcbcbc;
   transition: background-color 0.3s ease, color 0.3s ease;
+
+  svg {
+    width: 15px;
+    margin-right: 5px;
+    color: #000;
+  }
 }
 
-.btn-create-project:hover {
-  background-color: #1c1cee;
+.btn-create:hover {
+  background-color: #3030fb;
+  color: #fff;
+}
+
+
+.search-bar {
+  width: 230px;
+  height: 32px;
+  border: 0.5px solid #bcbcbc;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px;
+
+  input {
+    width: 80%;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    padding-left: 5px;
+    font-size: 13px;
+  }
+
+  input::placeholder {
+    font-weight: 300;
+  }
+
+  div {
+    width: 38px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3030fb;
+    cursor: pointer;
+
+    svg {
+      width: 14px;
+    }
+  }
 }
 
 /* fappe gante start */
@@ -847,9 +898,10 @@ nav {
 }
 
 
-.calendar-box {
+.calendar-box, .basic-container {
   width: 100%;
   margin-top: 20px;
+  
 }
 
 .fc-daygrid-day-number {
@@ -881,7 +933,7 @@ nav {
   display: flex;
   border: 0.5px solid #bcbcbc;
   background-color: #fff;
-  width: 200px;
+  width: 255px;
   justify-content: space-between;
   align-items: center;
   margin-right: 10px;
@@ -904,6 +956,83 @@ nav {
 .fc {
   background-color: #fff;
 }
+
+.project-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0px 100px;
+  height: 85px;
+
+  .field {
+    height: 100%;
+  }
+}
+
+.project-input {
+  width: 450px;
+  height: 40px;
+  background-color: transparent !important;
+  border: 0.5px solid #acacac;
+  outline: none;
+  padding-left: 10px;
+  margin-top: 5px;
+}
+
+.project-input::placeholder {
+  font-weight: 300;
+}
+
+.ant-select-selector {
+  border: none !important;
+  background-color: transparent !important;
+  outline: none !important;
+  padding-left: 10px !important;
+}
+
+.ant-select-selection-placeholder {
+  color: #a4a9b0 !important;
+   font-weight: 300 !important;
+}
+.project-btn-box {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  padding: 0px 100px;
+
+  .btn {
+    height: 40px;
+    width: 150px;
+    background-color: #3030fb;
+    outline: none;
+    border: none;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+
+  .cancle {
+     border: 0.5px solid #acacac;
+     background-color: transparent;
+     color: #000;
+     margin-right: 20px;
+  }
+}
+
+.ant-picker {
+  border-radius: 0px !important;
+}
+
+.ant-picker-input input::placeholder {
+   color: #a4a9b0 !important;
+   font-weight: 300 !important;
+}
+
+.form-err-msg {
+  font-size: 12px;
+  color: red;
+}
+
 
 @media only screen and (max-width: 767px) {
   .auth-left {

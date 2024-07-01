@@ -5,7 +5,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login";
-
 import Overview from "./pages/Overview";
 import Boards from "./pages/Boards";
 import Timeline from "./pages/Timeline";
@@ -13,6 +12,8 @@ import Backlogs from "./pages/Backlogs";
 import Teams from "./pages/Teams";
 import Signup from "./pages/Signup";
 import CalendarPage from "./pages/Calendar";
+import CreateNewProject from "./pages/CreateNewProject";
+import OnBoarding from "./pages/OnBoarding";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
         path: "calendar",
         element: <CalendarPage />,
       },
+      {
+        path: "create-new-project",
+        element: <CreateNewProject />,
+      },
     ],
   },
   {
@@ -52,6 +57,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />,
+  },
+  {
+    path: "/onboarding",
+    element: <OnBoarding />,
   },
 ]);
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Table } from "antd";
 import Female2 from "../images/female2.png";
+import SearchBar from "../components/SearchBar";
 
 const columns = [
   {
@@ -78,6 +79,9 @@ const Teams = () => {
     <div>
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Teams</h2>
+        <div>
+          <SearchBar />
+        </div>
       </div>
       <div className="scrollabel-container">
         <div>
