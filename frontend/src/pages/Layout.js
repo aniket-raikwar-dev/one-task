@@ -12,6 +12,7 @@ import Teams from "./Teams";
 import CalendarPage from "./Calendar";
 import CreateNewProject from "./CreateNewProject";
 import OnBoarding from "./OnBoarding";
+import TaskDetails from "./TaskDetails";
 
 
 const LayoutPage = () => {
@@ -32,6 +33,7 @@ const LayoutPage = () => {
             <Route path="/calendar" element={<CalendarPage collapsed={collapsed} />} />
             <Route path="/create-new-project" element={<CreateNewProject />} />
             <Route path="/onboarding" element={<OnBoarding />} />
+            <Route path="/task-details/:id" element={<TaskDetails />} />
           </Routes>
         </div>
       </Layout>

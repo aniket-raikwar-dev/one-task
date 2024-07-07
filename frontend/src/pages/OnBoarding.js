@@ -1,28 +1,39 @@
 import React from 'react'
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Select, Space, Image, Upload } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
+const roleOptions = [
+  {label: "Frontend Developer", value: "Frontend Developer"},
+  {label: "Backend Developer (Node Js)", value: "Backend Developer (Node Js)"},
+  {label: "Backend Developer (Java)", value: "Backend Developer (Java)"},
+  {label: "DevOps Engineer", value: "DevOps Engineer"},
+  {label: "Cloud Engineer", value: "Cloud Engineer"},
+  {label: "Software Tester", value: "Software Tester"},
+
+]
 
 const OnBoarding = () => {
+
+  const handleTechRoleChange = () => {}
   return (
-    <div>
+    <div className="main-container">
       <div className="flex justify-between items-center border-b pb-3">
-        <h2 className="page-title">New Project</h2>
+        <h2 className="page-title">Add Your Personal Details</h2>
       </div>
 
       <div className="basic-container scrollable-container">
         <Formik
-          initialValues={{ email: "", password: "" }}
-          validate={(values) => {
-            const errors = {};
-            if (!values.email) {
-              errors.email = "Required";
-            } else if (
-              !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-            ) {
-              errors.email = "Invalid email address";
-            }
-            return errors;
+          initialValues={{
+            projectName: "",
+            teamMembers: [],
+            projectOwner: "",
+            projectType: "",
+            budget: "",
+            startDate: null,
+            deadline: null,
           }}
+          validate={() => {}}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
               alert(JSON.stringify(values, null, 2));
@@ -30,100 +41,132 @@ const OnBoarding = () => {
             }, 400);
           }}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, setFieldValue, setFieldTouched }) => (
             <Form>
-              <div className="project-row mt-5">
-                <div>
-                  <p htmlFor="project-name">First Name</p>
+              <div className="project-row mt-5"></div>
+              <div className="project-row">
+                <div className="field">
+                  <p htmlFor="first-name">First Name</p>
                   <Field
                     className="project-input"
-                    placeholder="Ex. Amazon E-Commerce Site"
+                    placeholder="Ex. James"
                     type="text"
-                    name="project-name"
-                    id="project-name"
+                    name="first-name"
+                    id="first-name"
+                    onChange={(e) => {
+                      setFieldValue("firstName", e.target.value);
+                    }}
+                  />
+                  <ErrorMessage
+                    name="projectName"
+                    component="div"
+                    className="form-err-msg"
                   />
                 </div>
-                <div>
-                  <p htmlFor="project-owner">Last Name</p>
+                <div className="field">
+                  <p htmlFor="last-name">Last Name</p>
+                  <Field
+                    className="project-input"
+                    placeholder="Ex. Smith"
+                    type="text"
+                    name="last-name"
+                    id="last-name"
+                    onChange={(e) => {
+                      setFieldValue("lastName", e.target.value);
+                    }}
+                  />
+                  <ErrorMessage
+                    name="lastName"
+                    component="div"
+                    className="form-err-msg"
+                  />
+                </div>
+              </div>
+              <div className="project-row">
+                <div className="field">
+                  <p htmlFor="tech-role">Tech Role</p>
+                  <Select
+                    mode="single"
+                    id="project-type"
+                    className="project-input"
+                    style={{ paddingLeft: "0px" }}
+                    placeholder="Select Project Type"
+                    onChange={(value) =>
+                      handleTechRoleChange(value, setFieldValue)
+                    }
+                    options={roleOptions}
+                    optionRender={(option) => (
+                      <Space>{option.data.label}</Space>
+                    )}
+                  />
+                </div>
+
+                <div className="field">
+                  <p htmlFor="project-owner">Project Owner</p>
                   <Field
                     className="project-input"
                     placeholder="Ex. Jeff Bezos"
                     type="text"
                     name="project-owner"
                     id="project-owner"
+                    onChange={(e) => {
+                      setFieldValue("projectOwner", e.target.value);
+                    }}
+                  />
+                  <ErrorMessage
+                    name="projectOwner"
+                    component="div"
+                    className="form-err-msg"
                   />
                 </div>
               </div>
               <div className="project-row">
-                <div>
-                  <p htmlFor="project-manager">Project Manager</p>
+                <div className="field">
+                  <p htmlFor="location">Location</p>
+                  <Select
+                    mode="single"
+                    id="project-type"
+                    className="project-input"
+                    style={{ paddingLeft: "0px" }}
+                    placeholder="Select Project Type"
+                    onChange={(value) =>
+                      handleTechRoleChange(value, setFieldValue)
+                    }
+                    options={roleOptions}
+                    optionRender={(option) => (
+                      <Space>{option.data.label}</Space>
+                    )}
+                  />
+                </div>
+
+                <div className="field">
+                  <p htmlFor="phone">Phone No.</p>
                   <Field
                     className="project-input"
-                    placeholder="Ex. Aniket Raikwar"
+                    placeholder="Ex. Jeff Bezos"
                     type="text"
-                    name="project-manager"
-                    id="project-manager"
-                    disabled={true}
+                    name="phone"
+                    id="phone"
+                    onChange={(e) => {
+                      setFieldValue("projectOwner", e.target.value);
+                    }}
                   />
-                </div>
-                <div>
-                  <p htmlFor="project-type">Project Type</p>
-                  <Field
-                    className="project-input"
-                    placeholder="Ex. Web Payment"
-                    type="text"
-                    name="project-name"
-                    id="project-name"
+                  <ErrorMessage
+                    name="phone"
+                    component="div"
+                    className="form-err-msg"
                   />
                 </div>
               </div>
-              <div className="project-row">
-                <div>
-                  <p htmlFor="project-name">Esitmated Budget</p>
-                  <Field
-                    className="project-input"
-                    placeholder="Ex. $125k - $234k"
-                    type="project-name"
-                    name="project-name"
-                    id="project-name"
-                  />
-                </div>
-                <div>
-                  <p htmlFor="project-name">Team Members</p>
-                  <Field
-                    className="project-input"
-                    placeholder="Ex. Amazon E-Commerce Site"
-                    type="project-name"
-                    name="project-name"
-                    id="project-name"
-                  />
-                </div>
-              </div>
-              <div className="project-row">
-                <div>
-                  <p htmlFor="project-name">Start Date</p>
-                  <Field
-                    className="project-input"
-                    placeholder="Ex. Amazon E-Commerce Site"
-                    type="project-name"
-                    name="project-name"
-                    id="project-name"
-                  />
-                </div>
-                <div>
-                  <p htmlFor="project-name">Deadline</p>
-                  <Field
-                    className="project-input"
-                    placeholder="Ex. Amazon E-Commerce Site"
-                    type="project-name"
-                    name="project-name"
-                    id="project-name"
-                  />
-                </div>
-              </div>
+
               <div className="project-btn-box">
-                
-                <button className="btn save">Next</button>
+                <button
+                  className="btn save"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  Next
+                </button>
               </div>
             </Form>
           )}

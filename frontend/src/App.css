@@ -515,7 +515,7 @@ nav {
   font-weight: 500;
 }
 
-.btn-create {
+.btn-create, .btn-icons {
   padding: 0px 13px 0px 10px;
   height: 32px;
   display: flex;
@@ -524,8 +524,9 @@ nav {
   background-color: #fff;
   cursor: pointer;
   font-size: 13px;
+  font-weight: 400;
   letter-spacing: 0.3px;
-   border: 0.5px solid #bcbcbc;
+  border: 0.5px solid #bcbcbc;
   transition: background-color 0.3s ease, color 0.3s ease;
 
   svg {
@@ -535,10 +536,20 @@ nav {
   }
 }
 
-.btn-create:hover {
+.btn-icons {
+  padding: 0px 5px 0px 10px !important;
+}
+
+.btn-create:hover, .btn-icons:hover {
   background-color: #3030fb;
   color: #fff;
+
+  svg {
+    color: #fff;
+  }
 }
+
+
 
 
 .search-bar {
@@ -586,16 +597,19 @@ nav {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   margin-top: 10px;
-  height: 380px;
+  /* height: 380px; */
+}
+
+
+.gantt-container {
+  height: 55vh;
 }
 
 .big-gantt {
-  height: 75vh !important;
+  height: 80vh !important;
 }
 
-.gantt-container {
-  height: 380px;
-}
+
 
 .gantt .tick {
   stroke: #666;
@@ -989,6 +1003,7 @@ nav {
   background-color: transparent !important;
   outline: none !important;
   padding-left: 10px !important;
+  border-radius: 0px !important;
 }
 
 .ant-select-selection-placeholder {
@@ -998,7 +1013,7 @@ nav {
 .project-btn-box {
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 70px;
   padding: 0px 100px;
 
   .btn {
@@ -1013,7 +1028,7 @@ nav {
 
   .cancle {
      border: 0.5px solid #acacac;
-     background-color: transparent;
+     background-color: #fff;
      color: #000;
      margin-right: 20px;
   }
@@ -1033,6 +1048,121 @@ nav {
   color: red;
 }
 
+
+.ant-drawer-content-wrapper {
+  top: 60px !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  width: 450px !important;
+}
+
+.ant-drawer-close {
+  display: none !important;
+}
+
+.ant-drawer-body {
+  padding: 15px 24px !important;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.task-title-input, .task-desc-input, .task-title-bg-input {
+  width: 100%;
+  outline: none;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+ .task-desc-input {
+   font-size: 14px;
+   padding: 5px 1px;
+   margin-top: 5px;
+   font-weight: 300;
+   /* background-color: red; */
+ }
+
+ .task-title-bg-input {
+  font-size: 32px;
+  background-color: transparent;
+ }
+
+
+.task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  p {
+    width: 35%;
+  }
+
+
+  .task-input {
+    width: 60%;
+    padding-left: 0px !important;
+  }
+
+}
+
+.save {
+  height: 37px;
+} 
+
+.task-detail-box {
+  border:  0.5px solid #acacac;
+  background-color: #fff;
+  width: 30%;
+  margin-top: 10px;
+  height: fit-content;
+
+  svg {
+     width: 18px;
+     cursor: pointer;
+  }
+
+  .head {
+    height: 50px;
+    border-bottom: 0.5px solid #acacac;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center; 
+    padding: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+
+  .body {
+     padding: 10px 15px;
+  }
+}
+
+
+
+.back-trans {
+  background-color: transparent !important;
+}
+
+
+.comment-profile {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 0.5px solid #acacac;
+}
+
+.comment-input {
+  width: 99%;
+  height: 40px;
+  margin-left: 10px;
+  outline: none;
+  background-color: transparent;
+  border: 0.5px solid #acacac;
+  padding-left: 10px;
+}
 
 @media only screen and (max-width: 767px) {
   .auth-left {

@@ -14,6 +14,7 @@ import Signup from "./pages/Signup";
 import CalendarPage from "./pages/Calendar";
 import CreateNewProject from "./pages/CreateNewProject";
 import OnBoarding from "./pages/OnBoarding";
+import TaskDetails from "./pages/TaskDetails";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "create-new-project",
         element: <CreateNewProject />,
+      },
+      {
+        path: "task-details/:id",
+        element: <TaskDetails />,
       },
     ],
   },

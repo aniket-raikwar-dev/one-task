@@ -74,24 +74,43 @@ const tasks = [
     dependencies: "Design Home Rnd2",
     custom_class: "green",
   },
+
+  {
+    id: "Delivery Home v2",
+    name: "[Delivery] Home Design v2",
+    start: "2024-4-16",
+    end: "2024-4-19",
+    progress: 67,
+    dependencies: "Design Home Rnd2",
+    custom_class: "purple",
+  },
 ];
 
 const TimelineView = ({ timelineView, isSmallView }) => {
-  console.log("simplified timeline: ", isSmallView);
+  console.log("timeline: ", isSmallView);
+
   useEffect(() => {
-    new Gantt("#gantt", tasks, {
-      step: 24,
+    const gantt = new Gantt("#gantt", tasks, {
+      step: 14,
       view_mode: timelineView,
-      view_modes: ["Quarter Day", "Half Day", "Day", "Week", "Month", "Year"],
-      bar_height: 24,
+      view_modes: ["Half Day", "Day", "Week"],
+      bar_height: isSmallView ? 25 : 35,
       bar_corner_radius: 3,
-      arrow_curve: 5,
-      padding: 22,
+      arrow_curve: isSmallView ? 5 : 8,
+      padding: isSmallView ? 22 : 28,
+      
     });
+
+    const ganttContainer = document.querySelector(".gantt-container");
+    if (!isSmallView) {
+      ganttContainer.classList.add("big-gantt");
+    } else {
+      ganttContainer.classList.remove("big-gantt");
+    }
   }, [timelineView]);
 
   return (
-    <div id="app-gantt" className={!isSmallView ? "big-gantt" : ""}>
+    <div id="app-gantt">
       <svg id="gantt"></svg>
     </div>
   );
