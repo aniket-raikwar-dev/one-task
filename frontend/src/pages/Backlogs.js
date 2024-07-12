@@ -5,6 +5,7 @@ const Backlogs = () => {
     <div>
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Backlogs</h2>
+        <p>Checking</p>
       </div>
     </div>
   );
