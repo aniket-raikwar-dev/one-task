@@ -1,26 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Radio } from "antd";
 import LoginAimator from "../images/loginAnimator.gif";
 import RightArrow from "../images/rightArrow.png";
 import AuthImage1 from "../images/auth1.png";
 import AuthImage2 from "../images/auth2.png";
 import AuthImage3 from "../images/auth3.png";
+import Loader from "../images/loader.gif";
+import api from "../api";
+import userStore from "../stores/userStore";
 
 const bgColor = ["#3030fb", "#3030fb", "#A641FF", "#ff40dc"];
 
 const Signup = () => {
   const [currentImage, setCurrentImage] = useState(AuthImage1);
   const [currentBg, setCurrentBg] = useState("");
+  const [loader, setLoader] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState("");
-  const [value, setValue] = useState(0);
+  const [role, setRole] = useState(0);
+
+  const { setUserDetails } = userStore();
+
+  const navigate = useNavigate();
 
   const onRadioChange = (e) => {
     console.log("radio checked", e.target.value);
-    setValue(e.target.value);
+    setRole(e.target.value);
   };
 
   useEffect(() => {
@@ -64,18 +72,35 @@ const Signup = () => {
       return "Password must be at least 8 characters";
     }
 
+    if (role === 0) {
+      return "Choose one of the following roles";
+    }
+
     return "";
   };
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
+    setLoader(true);
     const errorMsg = checkValidations();
     if (errorMsg) {
+      setLoader(false);
       setShowErrorMessage(errorMsg);
     } else {
-      console.log("Proceed with logged in");
-      setShowErrorMessage(errorMsg);
+      const resp = await api.post("/users/register", {
+        email,
+        password,
+        role,
+      });
+      console.log("Proceed with regged in: ", resp);
+      const { data, token } = resp.data;
+      console.log("data: ", data);
+      setUserDetails(data);
+      localStorage.setItem("token", token);
+      setTimeout(() => {
+        setLoader(false);
+        navigate("/onboarding");
+      }, 3000);
     }
-    console.log("Error: ", errorMsg);
   };
 
   return (
@@ -146,9 +171,9 @@ const Signup = () => {
 
           <div className="mt-10 w-full">
             <div className="flex justify-between">
-              <Radio.Group onChange={onRadioChange} value={value}>
-                <Radio value={1}>Software Developer</Radio>
-                <Radio value={2}>Product Manager</Radio>
+              <Radio.Group onChange={onRadioChange} value={role}>
+                <Radio value={"manager"}>Product Manager</Radio>
+                <Radio value={"developer"}>Software Developer</Radio>
               </Radio.Group>
             </div>
           </div>
@@ -161,9 +186,13 @@ const Signup = () => {
             {showErrorMessage}
           </div>
 
-          <div className="btn-auth" onClick={handleLogin}>
+          <div className="btn-auth" onClick={handleRegister}>
             <p>Sign Up</p>
-            <img className="w-[18px] ml-3" src={RightArrow} alt="" />
+            {loader ? (
+              <img className="w-[30px] ml-3" src={Loader} alt="" />
+            ) : (
+              <img className="w-[18px] ml-3" src={RightArrow} alt="" />
+            )}
           </div>
           <div className="new-account">
             Already have an account?{" "}

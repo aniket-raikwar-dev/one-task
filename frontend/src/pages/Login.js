@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginAimator from "../images/loginAnimator.gif";
 import RightArrow from "../images/rightArrow.png";
 import AuthImage1 from "../images/auth1.png";
 import AuthImage2 from "../images/auth2.png";
 import AuthImage3 from "../images/auth3.png";
+import Loader from "../images/loader.gif";
+import api from "../api";
+import axios from "axios";
 
 const bgColor = ["#3030fb", "#3030fb", "#A641FF", "#ff40dc"];
 
 const Login = () => {
   const [currentImage, setCurrentImage] = useState(AuthImage1);
   const [currentBg, setCurrentBg] = useState("");
+  const [loader, setLoader] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const imageArray = [LoginAimator, AuthImage1, AuthImage2, AuthImage3];
@@ -61,14 +67,22 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    setLoader(true);
     const errorMsg = checkValidations();
     if (errorMsg) {
       setShowErrorMessage(errorMsg);
+      setLoader(false);
     } else {
-      console.log("Proceed with logged in");
-      setShowErrorMessage(errorMsg);
+      const resp = await api.post("/users/login", { email, password });
+      console.log("Proceed with logged in: ", resp);
+      const { token } = resp.data;
+      localStorage.setItem("token", token);
+
+      setTimeout(() => {
+        setLoader(false);
+        navigate("/onboarding");
+      }, 2000);
     }
-    console.log("Error: ", errorMsg);
   };
 
   return (
@@ -88,7 +102,7 @@ const Login = () => {
           <h3>
             Back to your <span>digital life.</span>
           </h3>
-          <p>Choose one of the options to go.</p>
+          <p>Welcome back! Let's get you Signed In.</p>
         </div>
         <div className="mt-14">
           <div>
@@ -152,7 +166,11 @@ const Login = () => {
 
           <div className="btn-auth" onClick={handleLogin}>
             <p>Log in</p>
-            <img className="w-[18px] ml-3" src={RightArrow} alt="" />
+            {loader ? (
+              <img className="w-[30px] ml-3" src={Loader} alt="" />
+            ) : (
+              <img className="w-[18px] ml-3" src={RightArrow} alt="" />
+            )}
           </div>
           <div className="new-account">
             Doesn't have an account?{" "}

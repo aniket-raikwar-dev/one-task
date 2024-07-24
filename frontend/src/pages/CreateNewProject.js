@@ -59,6 +59,7 @@ const teamOptions = [
 ];
 
 const CreateNewProject = () => {
+  
   const handleTeamChange = (value, setFieldValue) => {
     console.log(`selected ${value}`);
     setFieldValue("teamMembers", value);

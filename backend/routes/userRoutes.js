@@ -30,7 +30,7 @@ userRouter.get("/profile", isUserLogin, getUserProfileCtrl);
 userRouter.put(
   "/update",
   isUserLogin,
-  upload.single("profile"),
+  upload.single("profilePhoto"),
   updateUserProfileCtrl
 );
 

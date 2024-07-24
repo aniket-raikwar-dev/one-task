@@ -10,28 +10,32 @@ const userRegisterCtrl = async (req, res, next) => {
     // check email is exist
     const isUserExist = await User.findOne({ email });
     if (isUserExist) {
-      return next(new Error("Email already has been registered."));
+      return res
+        .status(400)
+        .json({ message: "Email already has been registered." });
     }
 
     // hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const isManager = role === "manager";
+
     // create new user account
     const user = await User.create({
       email,
       password: hashedPassword,
       role,
+      isManager,
     });
 
-    res.json({
-      status: 200,
+    res.status(200).json({
       message: "User is Successfully Registered.",
       data: user,
       token: generateToken(user._id),
     });
   } catch (error) {
-    next(new Error(error));
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -94,7 +98,7 @@ const getUserProfileCtrl = async (req, res, next) => {
 
 // PUT -> UPDATE USER PROFILE DATA
 const updateUserProfileCtrl = async (req, res, next) => {
-  const { firstName, lastName, location } = req.body;
+  const { firstName, lastName, techRole, location, phone } = req.body;
   try {
     const updateFields = {
       firstName,

@@ -1,54 +1,170 @@
-import React from 'react'
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Select, Space, Image, Upload } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Select, Space, Image, Upload, message } from "antd";
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  CheckOutlined,
+} from "@ant-design/icons";
+import api from "../api";
+import Loader from "../images/loader.gif";
+import RightArrow from "../images/rightArrow.png";
+import userStore from "../stores/userStore";
+import { getToken } from "../utils/getToken";
 
 const roleOptions = [
-  {label: "Frontend Developer", value: "Frontend Developer"},
-  {label: "Backend Developer (Node Js)", value: "Backend Developer (Node Js)"},
-  {label: "Backend Developer (Java)", value: "Backend Developer (Java)"},
-  {label: "DevOps Engineer", value: "DevOps Engineer"},
-  {label: "Cloud Engineer", value: "Cloud Engineer"},
-  {label: "Software Tester", value: "Software Tester"},
-
-]
+  { label: "Frontend Developer", value: "Frontend Developer" },
+  {
+    label: "Backend Developer (Node Js)",
+    value: "Backend Developer (Node Js)",
+  },
+  { label: "Backend Developer (Java)", value: "Backend Developer (Java)" },
+  { label: "Full Stack Developer", value: "Full Stack Developer" },
+  { label: "DevOps Engineer", value: "DevOps Engineer" },
+  { label: "Cloud Engineer", value: "Cloud Engineer" },
+  { label: "Software Tester", value: "Software Tester" },
+];
 
 const OnBoarding = () => {
+  const [loading, setLoading] = useState(false);
+  const [fileList, setFileList] = useState([]);
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
+  const [btnLoader, setBtnLoader] = useState(false);
 
-  const handleTechRoleChange = () => {}
+  const { userDetails } = userStore();
+
+  const handleTechRoleChange = (value, setFieldValue) => {
+    setFieldValue("techRole", value);
+  };
+
+  const validate = (values) => {
+    const errors = {};
+    if (!values.firstName) {
+      errors.firstName = "First Name is required";
+    }
+    if (!values.lastName) {
+      errors.lastName = "Last Name is required";
+    }
+    if (!values.techRole) {
+      errors.techRole = "Tech Role is required";
+    }
+    if (!values.location) {
+      errors.location = "Location is required";
+    }
+    if (!values.phone) {
+      errors.phone = "Phone number is required";
+    }
+
+    return errors;
+  };
+
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLargerThan5Mb = file.size / 1024 / 1024 < 5;
+    if (!isLargerThan5Mb) {
+      message.error("Image must smaller than 5MB!");
+    }
+    return isJpgOrPng && isLargerThan5Mb;
+  };
+
+
+  
+
+  const handlePhotoUpload = (info) => {
+    if (info.file.status === "uploading") {
+      setLoading(true);
+      return;
+    }
+    const file = info.file.originFileObj;
+    setFileList(file);
+    setIsImageUploaded(true);
+    setLoading(false);
+  };
+
+  const updateUserDetail = async (values) => {
+    setBtnLoader(true);
+    try {
+      const token = getToken();
+      const formData = new FormData();
+      formData.set("firstName", values.firstName);
+      formData.set("lastName", values.lastName);
+      formData.set("techRole", values.techRole);
+      formData.set("location", values.location);
+      formData.set("phone", values.phone);
+      formData.set("profilePhoto", fileList);
+
+      const resp = await api.put("/users/update", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setBtnLoader(false);
+      console.log("Update User Resp: ", resp);
+    } catch (error) {
+      setBtnLoader(false);
+      console.log("Update User Error: ", error);
+    }
+  };
+
+  const uploadButton = (
+    <button style={{ border: 0, background: "none" }} type="button">
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload Photo</div>
+    </button>
+  );
+
   return (
-    <div className="main-container">
+    <div className="py-10 px-36">
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Add Your Personal Details</h2>
       </div>
 
-      <div className="basic-container scrollable-container">
+      <div className="basic-container">
         <Formik
           initialValues={{
-            projectName: "",
-            teamMembers: [],
-            projectOwner: "",
-            projectType: "",
-            budget: "",
-            startDate: null,
-            deadline: null,
+            firstName: "",
+            lastName: "",
+            emailID: userDetails?.email,
+            techRole: "",
+            location: "",
+            phone: "",
           }}
-          validate={() => {}}
+          validate={validate}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
+            updateUserDetail(values);
           }}
         >
           {({ isSubmitting, setFieldValue, setFieldTouched }) => (
             <Form>
-              <div className="project-row mt-5"></div>
-              <div className="project-row">
+              <div className="flex justify-center">
+                <Upload
+                  name="avatar"
+                  listType="picture-circle"
+                  className="avatar-uploader"
+                  showUploadList={false}
+                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                  beforeUpload={beforeUpload}
+                  onChange={handlePhotoUpload}
+                >
+                  {isImageUploaded ? (
+                    <div className="pic-uploaded">
+                      <CheckOutlined className="check-icon" />
+                    </div>
+                  ) : (
+                    uploadButton
+                  )}
+                </Upload>
+              </div>
+
+              <div className="outer-row">
                 <div className="field">
-                  <p htmlFor="first-name">First Name</p>
+                  <p className="text-sm">First Name</p>
                   <Field
-                    className="project-input"
+                    className="project-input text-sm"
                     placeholder="Ex. James"
                     type="text"
                     name="first-name"
@@ -58,15 +174,15 @@ const OnBoarding = () => {
                     }}
                   />
                   <ErrorMessage
-                    name="projectName"
+                    name="firstName"
                     component="div"
                     className="form-err-msg"
                   />
                 </div>
                 <div className="field">
-                  <p htmlFor="last-name">Last Name</p>
+                  <p className="text-sm">Last Name</p>
                   <Field
-                    className="project-input"
+                    className="project-input text-sm"
                     placeholder="Ex. Smith"
                     type="text"
                     name="last-name"
@@ -82,13 +198,34 @@ const OnBoarding = () => {
                   />
                 </div>
               </div>
-              <div className="project-row">
+              <div className="outer-row">
                 <div className="field">
-                  <p htmlFor="tech-role">Tech Role</p>
+                  <p className="text-sm" htmlFor="email-id">
+                    Email ID
+                  </p>
+                  <Field
+                    className="project-input text-sm"
+                    placeholder="Ex. Jeff Bezos"
+                    type="text"
+                    name="email-id"
+                    id="email-id"
+                    value={userDetails?.email}
+                    disabled={true}
+                  />
+                  <ErrorMessage
+                    name="emailID"
+                    component="div"
+                    className="form-err-msg"
+                  />
+                </div>
+                <div className="field">
+                  <p className="text-sm" htmlFor="tech-role">
+                    Tech Role
+                  </p>
                   <Select
                     mode="single"
-                    id="project-type"
-                    className="project-input"
+                    id="tech-role"
+                    className="project-input text-sm"
                     style={{ paddingLeft: "0px" }}
                     placeholder="Select Project Type"
                     onChange={(value) =>
@@ -99,56 +236,47 @@ const OnBoarding = () => {
                       <Space>{option.data.label}</Space>
                     )}
                   />
-                </div>
-
-                <div className="field">
-                  <p htmlFor="project-owner">Project Owner</p>
-                  <Field
-                    className="project-input"
-                    placeholder="Ex. Jeff Bezos"
-                    type="text"
-                    name="project-owner"
-                    id="project-owner"
-                    onChange={(e) => {
-                      setFieldValue("projectOwner", e.target.value);
-                    }}
-                  />
                   <ErrorMessage
-                    name="projectOwner"
+                    name="techRole"
                     component="div"
                     className="form-err-msg"
                   />
                 </div>
               </div>
-              <div className="project-row">
+              <div className="outer-row">
                 <div className="field">
-                  <p htmlFor="location">Location</p>
-                  <Select
-                    mode="single"
-                    id="project-type"
-                    className="project-input"
-                    style={{ paddingLeft: "0px" }}
-                    placeholder="Select Project Type"
-                    onChange={(value) =>
-                      handleTechRoleChange(value, setFieldValue)
-                    }
-                    options={roleOptions}
-                    optionRender={(option) => (
-                      <Space>{option.data.label}</Space>
-                    )}
+                  <p className="text-sm" htmlFor="location">
+                    Location
+                  </p>
+                  <Field
+                    className="project-input text-sm"
+                    placeholder="Ex. Los Angeles, NY, USA"
+                    type="text"
+                    name="location"
+                    id="location"
+                    onChange={(e) => {
+                      setFieldValue("location", e.target.value);
+                    }}
+                  />
+                  <ErrorMessage
+                    name="location"
+                    component="div"
+                    className="form-err-msg"
                   />
                 </div>
 
                 <div className="field">
-                  <p htmlFor="phone">Phone No.</p>
+                  <p className="text-sm" htmlFor="phone">
+                    Phone No.
+                  </p>
                   <Field
-                    className="project-input"
-                    placeholder="Ex. Jeff Bezos"
+                    className="project-input text-sm"
+                    placeholder="Ex. +91 9827927273"
                     type="text"
                     name="phone"
                     id="phone"
                     onChange={(e) => {
-                      setFieldValue("projectOwner", e.target.value);
+                      setFieldValue("phone", e.target.value);
                     }}
                   />
                   <ErrorMessage
@@ -161,11 +289,18 @@ const OnBoarding = () => {
 
               <div className="project-btn-box">
                 <button
-                  className="btn save"
+                  className="btn flex justify-center items-center"
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  Next
+                  {btnLoader ? (
+                    <img className="w-[30px]" src={Loader} alt="" />
+                  ) : (
+                    <>
+                      <p>Next</p>
+                      <img className="w-[18px] ml-3" src={RightArrow} alt="" />
+                    </>
+                  )}
                 </button>
               </div>
             </Form>
@@ -174,6 +309,6 @@ const OnBoarding = () => {
       </div>
     </div>
   );
-}
+};
 
-export default OnBoarding
+export default OnBoarding;

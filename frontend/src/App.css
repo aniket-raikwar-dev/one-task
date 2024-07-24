@@ -83,7 +83,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-right: 10px;
+  padding-right: 15px;
 
   input {
     width: 90%;
@@ -91,7 +91,7 @@
     background-color: transparent;
     outline: none;
     border: none;
-    padding-left: 25px;
+    padding-left: 15px;
     letter-spacing: 1px;
     font-size: 14px;
     color: #121212;
@@ -971,7 +971,7 @@ nav {
   background-color: #fff;
 }
 
-.project-row {
+.project-row, .outer-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -982,6 +982,11 @@ nav {
   .field {
     height: 100%;
   }
+}
+
+.outer-row {
+  padding: 10px 0px;
+  height: 100px;
 }
 
 .project-input {
@@ -1163,6 +1168,37 @@ nav {
   border: 0.5px solid #acacac;
   padding-left: 10px;
 }
+
+.avatar-uploader {
+  width: 150px;
+  height: 150px;
+}
+
+.ant-upload {
+  width: 150px !important;
+  height: 150px !important;
+}
+
+.pic-uploaded {
+  width: 95%;
+  height: 95%;
+  border-radius: 50%;
+  margin-bottom: 2px;
+  margin-right: 2px;
+  background-color: #04bb6f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.check-icon {
+  color: #fff;
+  font-size: 24px;
+}
+
+
+
 
 @media only screen and (max-width: 767px) {
   .auth-left {
