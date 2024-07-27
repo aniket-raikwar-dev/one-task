@@ -28,12 +28,39 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    selectedProject: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+    },
+
+    projects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+    ],
+
+    manager: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    isAlreadyInProject: {
+      type: Boolean,
+    },
+
     role: {
       type: String,
       enum: ["manager", "developer"],
     },
 
     techRole: {
+      type: String,
+    },
+
+    phone: {
       type: String,
     },
   },

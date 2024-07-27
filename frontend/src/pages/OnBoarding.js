@@ -11,6 +11,7 @@ import Loader from "../images/loader.gif";
 import RightArrow from "../images/rightArrow.png";
 import userStore from "../stores/userStore";
 import { getToken } from "../utils/getToken";
+import { useNavigate } from "react-router-dom";
 
 const roleOptions = [
   { label: "Frontend Developer", value: "Frontend Developer" },
@@ -31,7 +32,8 @@ const OnBoarding = () => {
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [btnLoader, setBtnLoader] = useState(false);
 
-  const { userDetails } = userStore();
+  const { userDetails, setUserDetails } = userStore();
+  const navigate = useNavigate();
 
   const handleTechRoleChange = (value, setFieldValue) => {
     setFieldValue("techRole", value);
@@ -70,9 +72,6 @@ const OnBoarding = () => {
     return isJpgOrPng && isLargerThan5Mb;
   };
 
-
-  
-
   const handlePhotoUpload = (info) => {
     if (info.file.status === "uploading") {
       setLoading(true);
@@ -102,11 +101,13 @@ const OnBoarding = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      const { data } = resp?.data;
+      setUserDetails(data);
       setBtnLoader(false);
-      console.log("Update User Resp: ", resp);
+      navigate("/projects");
     } catch (error) {
       setBtnLoader(false);
-      console.log("Update User Error: ", error);
+      console.log("error: ", error);
     }
   };
 
@@ -129,7 +130,7 @@ const OnBoarding = () => {
             firstName: "",
             lastName: "",
             emailID: userDetails?.email,
-            techRole: "",
+            techRole: userDetails?.isManager ? "Product Manager" : "",
             location: "",
             phone: "",
           }}
@@ -227,9 +228,13 @@ const OnBoarding = () => {
                     id="tech-role"
                     className="project-input text-sm"
                     style={{ paddingLeft: "0px" }}
-                    placeholder="Select Project Type"
+                    placeholder="Select Tech Role"
                     onChange={(value) =>
                       handleTechRoleChange(value, setFieldValue)
+                    }
+                    disabled={userDetails.isManager}
+                    value={
+                      userDetails.isManager ? "Product Manager" : undefined
                     }
                     options={roleOptions}
                     optionRender={(option) => (

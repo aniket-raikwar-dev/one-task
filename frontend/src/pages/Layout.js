@@ -13,6 +13,7 @@ import CalendarPage from "./Calendar";
 import CreateNewProject from "./CreateNewProject";
 import OnBoarding from "./OnBoarding";
 import TaskDetails from "./TaskDetails";
+import SuccessPage from "./SuccessPage";
 
 
 const LayoutPage = () => {
@@ -24,7 +25,7 @@ const LayoutPage = () => {
         <Navbar collapsed={collapsed} setCollapsed={setCollapsed} />
         <div className="main-container">
           <Routes>
-            <Route exact path="/" element={<Project />} />
+            <Route exact path="/projects" element={<Project />} />
             <Route path="/overview" element={<Overview />} />
             <Route path="/boards" element={<Boards />} />
             <Route path="/timeline" element={<Timeline />} />
@@ -34,6 +35,7 @@ const LayoutPage = () => {
             <Route path="/create-new-project" element={<CreateNewProject />} />
             <Route path="/onboarding" element={<OnBoarding />} />
             <Route path="/task-details/:id" element={<TaskDetails />} />
+            <Route path="/success" element={<SuccessPage />} />
           </Routes>
         </div>
       </Layout>

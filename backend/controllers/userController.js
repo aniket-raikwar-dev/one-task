@@ -104,6 +104,8 @@ const updateUserProfileCtrl = async (req, res, next) => {
       firstName,
       lastName,
       location,
+      phone,
+      techRole,
     };
     if (req.file) {
       updateFields.profilePhoto = req.file.path;

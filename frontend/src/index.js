@@ -15,12 +15,18 @@ import CalendarPage from "./pages/Calendar";
 import CreateNewProject from "./pages/CreateNewProject";
 import OnBoarding from "./pages/OnBoarding";
 import TaskDetails from "./pages/TaskDetails";
+import Project from "./pages/Project";
+import SuccessPage from "./pages/SuccessPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "projects",
+        element: <Project />,
+      },
       {
         path: "overview",
         element: <Overview />,
@@ -52,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: "task-details/:id",
         element: <TaskDetails />,
+      },
+      {
+        path: "success",
+        element: <SuccessPage />,
       },
     ],
   },

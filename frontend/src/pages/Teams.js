@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import Female2 from "../images/female2.png";
 import SearchBar from "../components/SearchBar";
+import api from "../api";
 
 const columns = [
   {
     title: "Name",
     dataIndex: "name",
     key: "name",
-    render: (text) => (
+    render: (text, record) => (
       <div className="table-assigned">
         <div>
-          <img src={Female2} alt="" />
+          <img src={record?.profilePhoto} alt={text} />
         </div>
         <div>{text}</div>
       </div>
@@ -19,39 +20,62 @@ const columns = [
   },
   {
     title: "Role",
-    dataIndex: "status",
-    key: "status",
+    dataIndex: "techRole",
+    key: "techRole",
   },
   {
     title: "Project",
-    dataIndex: "task",
-    key: "task",
-    render: (text) => <a href="#">{text}</a>,
+    dataIndex: "project",
+    key: "project",
+    render: (text) => <a href="#">{text || "Not Assigned"}</a>,
   },
-  // {
-  //   title: "Priority",
-  //   dataIndex: "priority",
-  //   key: "priority",
-  //   render: (text) => <div className="table-priority">{text}</div>,
-  // },
+
   {
     title: "Manager",
-    dataIndex: "status",
-    key: "status",
+    dataIndex: "manager",
+    key: "manager",
+    render: (text) => text || "-",
   },
   {
     title: "Phone",
-    dataIndex: "status",
-    key: "status",
+    dataIndex: "phone",
+    key: "phone",
   },
   {
     title: "Location",
-    dataIndex: "status",
-    key: "status",
+    dataIndex: "location",
+    key: "location",
   },
 ];
 
 const Teams = () => {
+  const [teamsData, setTeamsData] = useState([]);
+
+  const getProjectTeamsData = async () => {
+    try {
+      const resp = await api.get("/users/all");
+      console.log("all user resp: ", resp);
+      const { data } = resp?.data;
+      const formattedData = data.map((item, index) => ({
+        key: index,
+        profilePhoto: item.profilePhoto,
+        name: item.fullName,
+        techRole: item.techRole,
+        project: item.project,
+        manager: item.manager,
+        phone: item.phone,
+        location: item.location,
+      }));
+      setTeamsData(formattedData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProjectTeamsData();
+  }, []);
+
   const data = [
     {
       key: "1",
@@ -87,7 +111,7 @@ const Teams = () => {
         <div>
           <Table
             columns={columns}
-            dataSource={data}
+            dataSource={teamsData}
             rowClassName={() => "custom-table-row"}
           />
         </div>

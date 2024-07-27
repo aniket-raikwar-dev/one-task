@@ -4,7 +4,12 @@ import Male2 from "../images/male2.png";
 import Female1 from "../images/female1.png";
 import Female2 from "../images/female2.png";
 
-const ProjectCard = () => {
+const ProjectCard = ({ project }) => {
+  const formatDateToDDMMYYYY = (date) => {
+    const [year, month, day] = date?.split("T")[0].split("-");
+    return `${day}.${month}.${year}`;
+  };
+
   return (
     <div className="project-box">
       <div>
@@ -12,18 +17,13 @@ const ProjectCard = () => {
           <div className="">
             <p className="card-top-text">Teams:</p>
             <div className="flex mt-1">
-              <div className="user-circle">
-                <img src={Male1} alt="" />
-              </div>
-              <div className="user-circle-rest">
-                <img src={Female2} alt="" />
-              </div>
-              <div className="user-circle-rest">
-                <img src={Male2} alt="" />
-              </div>
-              <div className="user-circle-rest">
-                <img src={Female1} alt="" />
-              </div>
+              {project?.teamMembers?.map((member, index) => (
+                <div
+                  className={index === 0 ? "user-circle" : "user-circle-rest"}
+                >
+                  <img src={member?.profilePhoto} alt="" />
+                </div>
+              ))}
             </div>
           </div>
           <div className="">
@@ -36,12 +36,12 @@ const ProjectCard = () => {
               >
                 <path d="M9 1V3H15V1H17V3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9ZM20 8H4V19H20V8ZM15.0355 10.136L16.4497 11.5503L11.5 16.5L7.96447 12.9645L9.37868 11.5503L11.5 13.6716L15.0355 10.136Z"></path>
               </svg>
-              <p>24.08.2024</p>
+              <p>{formatDateToDDMMYYYY(project?.deadline)}</p>
             </div>
           </div>
         </div>
         <div className="project-content">
-          <h2>Coinbase: The Future of Web3 and NFT's, Blockchain in 2025.</h2>
+          <h2>{project?.name}</h2>
           <div className="project-owner">
             <div>
               <svg
@@ -54,7 +54,7 @@ const ProjectCard = () => {
             </div>
 
             <p>
-              Project Manager: <span>Brad Johnson</span>
+              Project Manager: <span>{project?.manager?.fullName}</span>
             </p>
           </div>
           <div className="project-owner">
@@ -69,23 +69,31 @@ const ProjectCard = () => {
             </div>
 
             <p>
-              Project Start: <span>17.06.2015</span>
+              Project Start:{" "}
+              <span>{formatDateToDDMMYYYY(project?.startDate)}</span>
             </p>
           </div>
         </div>
       </div>
       <div className="flex justify-between border-top">
-        <div className="project-selected flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="#fff"
-          >
-            <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11.0026 16L18.0737 8.92893L16.6595 7.51472L11.0026 13.1716L8.17421 10.3431L6.75999 11.7574L11.0026 16Z"></path>
-          </svg>
+        {project?.isSelected ? (
+          <div className="project-selected flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="#fff"
+            >
+              <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11.0026 16L18.0737 8.92893L16.6595 7.51472L11.0026 13.1716L8.17421 10.3431L6.75999 11.7574L11.0026 16Z"></path>
+            </svg>
 
-          <p className="view-detail ml-1">Selected Project</p>
-        </div>
+            <p className="view-detail ml-1">Project Selected</p>
+          </div>
+        ) : (
+          <div className="project-unselected flex items-center">
+            <p className="view-detail ml-1">Select the Project</p>
+          </div>
+        )}
+
         <div className="flex items-center">
           <p className="card-top-text">View Details</p>
           <div className="ml-4" style={{ width: "15px" }}>

@@ -8,6 +8,7 @@ import AuthImage3 from "../images/auth3.png";
 import Loader from "../images/loader.gif";
 import api from "../api";
 import axios from "axios";
+import userStore from "../stores/userStore";
 
 const bgColor = ["#3030fb", "#3030fb", "#A641FF", "#ff40dc"];
 
@@ -20,6 +21,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState("");
 
+  const { setUserDetails } = userStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,12 +77,13 @@ const Login = () => {
     } else {
       const resp = await api.post("/users/login", { email, password });
       console.log("Proceed with logged in: ", resp);
-      const { token } = resp.data;
+      const { data, token } = resp.data;
+      setUserDetails(data);
       localStorage.setItem("token", token);
 
       setTimeout(() => {
         setLoader(false);
-        navigate("/onboarding");
+        navigate("/projects");
       }, 2000);
     }
   };

@@ -1,88 +1,91 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Select, Space, DatePicker } from "antd";
-
-const projectOptions = [
-  { label: "Online Stores", value: "Online Stores" },
-  {
-    label: "Subscription-based Services",
-    value: "Subscription-based Services",
-  },
-  { label: "Blogging Platforms", value: "Blogging Platforms" },
-  { label: "Project Management Tools", value: "4" },
-  { label: "Social Media Platforms", value: "5" },
-  { label: "SaaS Platforms", value: "6" },
-  { label: "Job Portals", value: "7" },
-  { label: "Travel Booking Sites", value: "8" },
-  { label: "Payment Gateways", value: "9" },
-  { label: "Streaming Services", value: "10" },
-  { label: "Real Estate Portal", value: "11" },
-  { label: "Learning Management Systems (LMS)", value: "12" },
-];
-
-const budgetOptions = [
-  { label: "$1,000 - $5,000 ", value: "1" },
-  { label: "$5,000  -  $10,000", value: "2" },
-  { label: "$10,000  -  $30,000", value: "3" },
-  { label: "$30,000  -  $50,000", value: "4" },
-  { label: "$50,000  -  $100,000", value: "5" },
-  { label: "$100,000  -  $250,000", value: "6" },
-  { label: "$250,000  -  $300,000", value: "7" },
-  { label: "Above $300,000", value: "8" },
-];
-
-const teamOptions = [
-  {
-    label: "China",
-    value: "china",
-    emoji: "🇨🇳",
-    desc: "China (中国)",
-  },
-  {
-    label: "USA",
-    value: "usa",
-    emoji: "🇺🇸",
-    desc: "USA (美国)",
-  },
-  {
-    label: "Japan",
-    value: "japan",
-    emoji: "🇯🇵",
-    desc: "Japan (日本)",
-  },
-  {
-    label: "Korea",
-    value: "korea",
-    emoji: "🇰🇷",
-    desc: "Korea (韩国)",
-  },
-];
+import { Select, Space, DatePicker, message } from "antd";
+import api from "../api";
+import userStore from "../stores/userStore";
+import projectStore from "../stores/projectStore";
+import moment from "moment";
+import { budgetOptions, projectOptions } from "../utils/optionsData";
+import Loader from "../images/loader.gif";
+import { useNavigate } from "react-router-dom";
 
 const CreateNewProject = () => {
-  
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [loader, setLoader] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const { userDetails } = userStore();
+  const { setProjectDetails } = projectStore();
+  const navigate = useNavigate();
+
+  const getTeamsMembersData = async () => {
+    try {
+      const resp = await api.get("/users/all");
+      const { data } = resp?.data;
+
+      const filterData = data.filter(
+        (item) => item._id !== userDetails._id && !item.isManager
+      );
+
+      const formattedTeam = filterData?.map((user) => ({
+        value: user._id,
+        label: user.fullName,
+        profile: user.profilePhoto,
+      }));
+
+      setTeamMembers(formattedTeam);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getTeamsMembersData();
+  }, []);
+
   const handleTeamChange = (value, setFieldValue) => {
-    console.log(`selected ${value}`);
     setFieldValue("teamMembers", value);
   };
 
   const handleProjectTypeChange = (value, setFieldValue) => {
-    console.log(`selected ${value}`);
     setFieldValue("projectType", value);
   };
 
   const handleBudgetChange = (value, setFieldValue) => {
-    console.log(`selected ${value}`);
     setFieldValue("budget", value);
   };
 
-  const handleStartDateChange = (date, dateString, setFieldValue) => {
-    console.log(date, dateString);
-    setFieldValue("startDate", date);
+  const handleStartDateChange = (date, setFieldValue) => {
+    setFieldValue("startDate", moment(date).format("YYYY-MM-DD"));
   };
 
-  const handleDeadlineChange = (date, dateString, setFieldValue) => {
-    console.log(date, dateString);
-    setFieldValue("deadline", date);
+  const handleDeadlineChange = (date, setFieldValue) => {
+    setFieldValue("deadline", moment(date).format("YYYY-MM-DD"));
+  };
+
+  const createTheNewProject = async (values) => {
+    setLoader(true);
+    try {
+      const body = {
+        name: values.projectName,
+        teamMembers: [...values.teamMembers, userDetails?._id],
+        manager: values.projectManager,
+        owner: values.projectOwner,
+        projectType: values.projectType,
+        budget: values.budget,
+        startDate: values.startDate,
+        deadline: values.deadline,
+      };
+      const resp = await api.post("/project/create", body);
+      const { data } = resp?.data;
+      setProjectDetails(data);
+      setTimeout(() => {
+        setLoader(false);
+        navigate("/success");
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+      setLoader(false);
+    }
   };
 
   const validate = (values) => {
@@ -113,6 +116,7 @@ const CreateNewProject = () => {
 
   return (
     <div>
+      {contextHolder}
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">New Project</h2>
       </div>
@@ -122,6 +126,7 @@ const CreateNewProject = () => {
           initialValues={{
             projectName: "",
             teamMembers: [],
+            projectManager: userDetails?._id,
             projectOwner: "",
             projectType: "",
             budget: "",
@@ -130,10 +135,7 @@ const CreateNewProject = () => {
           }}
           validate={validate}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
+            createTheNewProject(values);
           }}
         >
           {({ isSubmitting, setFieldValue, setFieldTouched }) => (
@@ -165,14 +167,16 @@ const CreateNewProject = () => {
                     style={{ paddingLeft: "0px" }}
                     placeholder="Select Team Member's"
                     onChange={(value) => handleTeamChange(value, setFieldValue)}
-                    options={teamOptions}
+                    options={teamMembers}
                     optionRender={(option) => (
-                      <Space>
-                        <span role="img" aria-label={option.data.label}>
-                          {option.data.emoji}
-                        </span>
-                        {option.data.desc}
-                      </Space>
+                      <div className="flex py-1">
+                        <img
+                          className="w-6 h-6 rounded-full mr-3"
+                          src={option.data.profile}
+                          alt=""
+                        />
+                        {option.data.label}
+                      </div>
                     )}
                   />
                   <ErrorMessage
@@ -192,6 +196,7 @@ const CreateNewProject = () => {
                     name="project-manager"
                     id="project-manager"
                     disabled={true}
+                    value={userDetails?.fullName}
                   />
                 </div>
 
@@ -297,11 +302,15 @@ const CreateNewProject = () => {
               <div className="project-btn-box">
                 <button className="btn cancle">Cancle</button>
                 <button
-                  className="btn save"
+                  className="btn flex justify-center items-center"
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  Save
+                  {loader ? (
+                    <img className="w-[30px]" src={Loader} alt="" />
+                  ) : (
+                    <p>Save</p>
+                  )}
                 </button>
               </div>
             </Form>

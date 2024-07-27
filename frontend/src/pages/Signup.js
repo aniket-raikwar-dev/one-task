@@ -173,7 +173,7 @@ const Signup = () => {
             <div className="flex justify-between">
               <Radio.Group onChange={onRadioChange} value={role}>
                 <Radio value={"manager"}>Product Manager</Radio>
-                <Radio value={"developer"}>Software Developer</Radio>
+                <Radio className="ml-3" value={"developer"}>Software Developer</Radio>
               </Radio.Group>
             </div>
           </div>

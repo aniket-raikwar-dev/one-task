@@ -509,6 +509,11 @@ nav {
 
 .project-unselected {
   background-color: whitesmoke;
+  border:  0.5px solid #dcdcdc;
+
+  p{
+    color: #000;
+  }
 }
 .page-title {
   font-size: 18px;
