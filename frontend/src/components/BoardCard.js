@@ -1,18 +1,25 @@
 import React from "react";
 import Male1 from "../images/male1.png";
+import { formatDate } from "../utils/formatDate";
 
-const BoardCard = ({ showDrawer }) => {
+const BoardCard = ({ task, showDrawer }) => {
   return (
-    <div className="board-card" onClick={showDrawer}>
+    <div className="board-card" onClick={() => showDrawer(false)}>
       <div className="board-card-top">
         <div className="flex justify-between">
-          <div className="date">12.01.2024</div>
-          <div className="tech">High</div>
+          <div className="date">{formatDate(task?.createdAt)}</div>
+          <div className={`priority ${task?.priority}`}>{task?.priority}</div>
         </div>
 
-        <h3 className="task-text">
-          FE: Replacement of Node JS with Java and Go Language
-        </h3>
+        {task?.title ? (
+          <h3 className="task-text">
+            {task?.title.length > 80
+              ? `${task?.title.slice(0, 80)}...`
+              : task?.title}
+          </h3>
+        ) : (
+          <h3 className="task-text">No Title</h3>
+        )}
 
         <div className="project-owner mar-t-6 mb-1">
           <div>
@@ -26,23 +33,37 @@ const BoardCard = ({ showDrawer }) => {
           </div>
 
           <p>
-            Estimation: <span>3 SP</span>
+            Estimation:{" "}
+            <span>{task?.estimation ? task?.estimation : "Not Assigned"}</span>
           </p>
         </div>
 
-        <div className="tech-box mt-3">
-          <div className="circle"></div>
-          Frontend Stack
+        <div className="guild-box mt-3">
+          {task?.guild ? (
+            <>
+              <div className="circle"></div>
+              {task?.guild}
+            </>
+          ) : (
+            "-"
+          )}
         </div>
       </div>
 
       <div className="board-card-bottom">
-        <div className="table-assigned">
-          <div>
-            <img src={Male1} alt="" />
+        {task?.assignee ? (
+          <div className="table-assigned">
+            <div className="profile">
+              <img src={task?.assignee?.profilePhoto} alt="" />
+            </div>
+            <div className="fz-12">{task?.assignee?.fullName}</div>
           </div>
-          <div className="fz-12">Brad Johnson</div>
-        </div>
+        ) : (
+          <div className="table-assigned">
+            <div className="fz-12">No Assignee</div>
+          </div>
+        )}
+
         <div className="flex">
           <div className="short-cut">
             <svg
@@ -62,7 +83,7 @@ const BoardCard = ({ showDrawer }) => {
             >
               <path d="M7.29117 20.8242L2 22L3.17581 16.7088C2.42544 15.3056 2 13.7025 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C10.2975 22 8.6944 21.5746 7.29117 20.8242ZM7.58075 18.711L8.23428 19.0605C9.38248 19.6745 10.6655 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 13.3345 4.32549 14.6175 4.93949 15.7657L5.28896 16.4192L4.63416 19.3658L7.58075 18.711Z"></path>
             </svg>
-            <p>4</p>
+            <p>{task?.comments.length}</p>
           </div>
         </div>
       </div>

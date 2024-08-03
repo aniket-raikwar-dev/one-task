@@ -39,7 +39,7 @@ const OverviewCard = () => {
 
       <div className="ovr-card-bottom">
         <div className="table-assigned">
-          <div>
+          <div className="profile">
             <img src={Male1} alt="" />
           </div>
           <div className="fz-12">Brad Johnson</div>

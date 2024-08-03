@@ -1,21 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Select, Space, DatePicker, message } from "antd";
+import { Select, Space, DatePicker } from "antd";
 import api from "../api";
 import userStore from "../stores/userStore";
 import projectStore from "../stores/projectStore";
 import moment from "moment";
-import { budgetOptions, projectOptions } from "../utils/optionsData";
+import {
+  budgetOptions,
+  projectOptions,
+  statusOptions,
+} from "../utils/projectOptionsData";
 import Loader from "../images/loader.gif";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 const CreateNewProject = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [loader, setLoader] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [projectData, setProjectData] = useState([]);
+
   const { userDetails } = userStore();
   const { setProjectDetails } = projectStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams();
+
+  const isEditMode = location.pathname.split("/")[1] === "edit-project";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // setIsLoading(true);
+      await getTeamsMembersData();
+      if (isEditMode) {
+        await getProjectDetailsData();
+      }
+      // setIsLoading(false);
+    };
+    fetchData();
+  }, [isEditMode, id]);
+
+  const getProjectDetailsData = async () => {
+    try {
+      const resp = await api.get(`/project/details/${id}`);
+      console.log("project detail : ", resp);
+      const { data } = resp?.data;
+      setProjectData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getTeamsMembersData = async () => {
     try {
@@ -26,21 +58,27 @@ const CreateNewProject = () => {
         (item) => item._id !== userDetails._id && !item.isManager
       );
 
-      const formattedTeam = filterData?.map((user) => ({
-        value: user._id,
-        label: user.fullName,
-        profile: user.profilePhoto,
-      }));
-
-      setTeamMembers(formattedTeam);
+      const formattedData = formattedTeamMemberData(filterData);
+      setTeamMembers(formattedData);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    getTeamsMembersData();
-  }, []);
+  const formattedTeamMemberData = (data) => {
+    if (isEditMode) {
+      data = data?.filter((member) => member._id !== projectData?.manager?._id);
+    }
+    const formattedTeam = data?.map((user) => ({
+      value: user._id,
+      label: user.fullName,
+      profile: user.profilePhoto,
+    }));
+
+    return formattedTeam;
+  };
+
+  console.log("projectData: ", projectData);
 
   const handleTeamChange = (value, setFieldValue) => {
     setFieldValue("teamMembers", value);
@@ -49,20 +87,23 @@ const CreateNewProject = () => {
   const handleProjectTypeChange = (value, setFieldValue) => {
     setFieldValue("projectType", value);
   };
+  const handleProjectStatusChange = (value, setFieldValue) => {
+    setFieldValue("status", value);
+  };
 
   const handleBudgetChange = (value, setFieldValue) => {
     setFieldValue("budget", value);
   };
 
-  const handleStartDateChange = (date, setFieldValue) => {
-    setFieldValue("startDate", moment(date).format("YYYY-MM-DD"));
+  const handleStartDateChange = (value, setFieldValue) => {
+    setFieldValue("startDate", moment(new Date(value)).format("YYYY-MM-DD"));
   };
 
-  const handleDeadlineChange = (date, setFieldValue) => {
-    setFieldValue("deadline", moment(date).format("YYYY-MM-DD"));
+  const handleDeadlineChange = (value, setFieldValue) => {
+    setFieldValue("deadline", moment(new Date(value)).format("YYYY-MM-DD"));
   };
 
-  const createTheNewProject = async (values) => {
+  const handleSubmit = async (values) => {
     setLoader(true);
     try {
       const body = {
@@ -70,14 +111,22 @@ const CreateNewProject = () => {
         teamMembers: [...values.teamMembers, userDetails?._id],
         manager: values.projectManager,
         owner: values.projectOwner,
+        description: values.description,
+        status: values.status,
         projectType: values.projectType,
         budget: values.budget,
         startDate: values.startDate,
         deadline: values.deadline,
       };
-      const resp = await api.post("/project/create", body);
-      const { data } = resp?.data;
-      setProjectDetails(data);
+      console.log("bodies: ", body);
+      if (isEditMode) {
+        const resp = await api.put(`/project/update/${id}`, body);
+      } else {
+        const resp = await api.post("/project/create", body);
+      }
+      // const resp = await api.post("/project/create", body);
+      // const { data } = resp?.data;
+      // setProjectDetails(data);
       setTimeout(() => {
         setLoader(false);
         navigate("/success");
@@ -93,11 +142,21 @@ const CreateNewProject = () => {
     if (!values.projectName) {
       errors.projectName = "Project Name is required";
     }
+
     if (!values.teamMembers || values.teamMembers.length === 0) {
       errors.teamMembers = "At least one Team Member is required";
     }
+
     if (!values.projectOwner) {
       errors.projectOwner = "Project Owner is required";
+    }
+
+    if (!values.description) {
+      errors.description = "Description is required";
+    }
+
+    if (!values.status) {
+      errors.status = "Project Status is required";
     }
     if (!values.projectType) {
       errors.projectType = "Project Type is required";
@@ -114,33 +173,48 @@ const CreateNewProject = () => {
     return errors;
   };
 
+  const safeMoment = (dateString) => {
+    if (!dateString) return null;
+    const date = moment(dateString);
+    return date.isValid() ? date : null;
+  };
+
   return (
     <div>
-      {contextHolder}
       <div className="flex justify-between items-center border-b pb-3">
-        <h2 className="page-title">New Project</h2>
+        <h2 className="page-title">
+          {isEditMode ? "Edit Project" : "New Project"}
+        </h2>
       </div>
 
       <div className="basic-container scrollable-container">
         <Formik
+          enableReinitialize
           initialValues={{
-            projectName: "",
-            teamMembers: [],
+            projectName: projectData?.name || "",
+            teamMembers:
+              formattedTeamMemberData(projectData?.teamMembers) || [],
             projectManager: userDetails?._id,
-            projectOwner: "",
-            projectType: "",
-            budget: "",
-            startDate: null,
-            deadline: null,
+            projectOwner: projectData?.owner || "",
+            description: projectData?.description || "",
+            status: projectData?.status || undefined,
+            projectType: projectData?.projectType || undefined,
+            budget: projectData?.budget || undefined,
+            startDate: projectData?.startDate
+              ? safeMoment(projectData?.startDate)
+              : null,
+            deadline: projectData?.deadline
+              ? moment(projectData.deadline)
+              : null,
           }}
-          validate={validate}
+          // validate={validate}
           onSubmit={(values, { setSubmitting }) => {
-            createTheNewProject(values);
+            handleSubmit(values);
           }}
         >
-          {({ isSubmitting, setFieldValue, setFieldTouched }) => (
+          {({ isSubmitting, setFieldValue, values }) => (
             <Form>
-              <div className="project-row mt-5">
+              <div className="project-row mt-1">
                 <div className="field">
                   <p htmlFor="project-name">Project Name</p>
                   <Field
@@ -149,6 +223,7 @@ const CreateNewProject = () => {
                     type="text"
                     name="project-name"
                     id="project-name"
+                    value={values.projectName}
                     onChange={(e) => {
                       setFieldValue("projectName", e.target.value);
                     }}
@@ -168,6 +243,7 @@ const CreateNewProject = () => {
                     placeholder="Select Team Member's"
                     onChange={(value) => handleTeamChange(value, setFieldValue)}
                     options={teamMembers}
+                    value={values.teamMembers}
                     optionRender={(option) => (
                       <div className="flex py-1">
                         <img
@@ -186,6 +262,7 @@ const CreateNewProject = () => {
                   />
                 </div>
               </div>
+
               <div className="project-row">
                 <div className="field">
                   <p htmlFor="project-manager">Project Manager</p>
@@ -208,6 +285,7 @@ const CreateNewProject = () => {
                     type="text"
                     name="project-owner"
                     id="project-owner"
+                    value={values.projectOwner}
                     onChange={(e) => {
                       setFieldValue("projectOwner", e.target.value);
                     }}
@@ -219,6 +297,52 @@ const CreateNewProject = () => {
                   />
                 </div>
               </div>
+
+              <div className="project-row">
+                <div className="field">
+                  <p htmlFor="description">Description</p>
+                  <Field
+                    className="project-input"
+                    placeholder="Write a Description"
+                    type="text"
+                    name="description"
+                    id="description"
+                    value={values.description}
+                    onChange={(e) => {
+                      setFieldValue("description", e.target.value);
+                    }}
+                  />
+                  <ErrorMessage
+                    name="description"
+                    component="div"
+                    className="form-err-msg"
+                  />
+                </div>
+                <div className="field">
+                  <p>Status Zone</p>
+                  <Select
+                    mode="single"
+                    id="status"
+                    className="project-input"
+                    style={{ paddingLeft: "0px" }}
+                    placeholder="Select Project Status"
+                    onChange={(value) =>
+                      handleProjectStatusChange(value, setFieldValue)
+                    }
+                    value={values.status}
+                    options={statusOptions}
+                    optionRender={(option) => (
+                      <Space>{option.data.label}</Space>
+                    )}
+                  />
+                  <ErrorMessage
+                    name="status"
+                    component="div"
+                    className="form-err-msg"
+                  />
+                </div>
+              </div>
+
               <div className="project-row">
                 <div className="field">
                   <p htmlFor="project-type">Project Type</p>
@@ -231,6 +355,7 @@ const CreateNewProject = () => {
                     onChange={(value) =>
                       handleProjectTypeChange(value, setFieldValue)
                     }
+                    value={values.projectType}
                     options={projectOptions}
                     optionRender={(option) => (
                       <Space>{option.data.label}</Space>
@@ -253,6 +378,7 @@ const CreateNewProject = () => {
                     onChange={(value) =>
                       handleBudgetChange(value, setFieldValue)
                     }
+                    value={values.budget}
                     options={budgetOptions}
                     optionRender={(option) => (
                       <Space>{option.data.label}</Space>
@@ -299,6 +425,7 @@ const CreateNewProject = () => {
                   />
                 </div>
               </div>
+
               <div className="project-btn-box">
                 <button className="btn cancle">Cancle</button>
                 <button

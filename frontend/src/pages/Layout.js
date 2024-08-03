@@ -14,7 +14,7 @@ import CreateNewProject from "./CreateNewProject";
 import OnBoarding from "./OnBoarding";
 import TaskDetails from "./TaskDetails";
 import SuccessPage from "./SuccessPage";
-
+import ProjectDetails from "./ProjectDetails";
 
 const LayoutPage = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -31,11 +31,16 @@ const LayoutPage = () => {
             <Route path="/timeline" element={<Timeline />} />
             <Route path="/backlogs" element={<Backlogs />} />
             <Route path="/teams" element={<Teams />} />
-            <Route path="/calendar" element={<CalendarPage collapsed={collapsed} />} />
+            <Route
+              path="/calendar"
+              element={<CalendarPage collapsed={collapsed} />}
+            />
             <Route path="/create-new-project" element={<CreateNewProject />} />
+            <Route path="/edit-project/:id" element={<CreateNewProject />} />
             <Route path="/onboarding" element={<OnBoarding />} />
             <Route path="/task-details/:id" element={<TaskDetails />} />
             <Route path="/success" element={<SuccessPage />} />
+            <Route path="/project-details/:id" element={<ProjectDetails />} />
           </Routes>
         </div>
       </Layout>

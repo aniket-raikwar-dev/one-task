@@ -9,7 +9,7 @@ const SuccessPage = () => {
   return (
     <div className="flex w-full flex-col items-center mt-24">
       <img className="w-52" src={SuccessImg} alt="no-data" />
-      <p className="text-[22px] mt-6 mb-6">
+      <p className="text-[22px] mt-6 mb-6 text-center">
         Your Project{" "}
         <span className="text-[#3030fb] font-bold">
           "{projectDetails?.name}"

@@ -6,20 +6,13 @@ const taskSchema = new mongoose.Schema(
       type: String,
     },
 
-    status: {
-      type: String,
-    },
     assignee: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
 
-    description: {
+    status: {
       type: String,
-    },
-
-    estimation: {
-      type: Number,
     },
 
     priority: {
@@ -32,18 +25,31 @@ const taskSchema = new mongoose.Schema(
       ref: "User",
     },
 
-    startDate: {
-      type: Date,
+    estimation: {
+      type: String,
     },
 
     dueDate: {
       type: Date,
     },
 
+    guild: {
+      type: String,
+    },
+
+    description: {
+      type: String,
+    },
+
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+    },
+
     labels: [
       {
         type: String,
-        enum: ["frontend", "new", "test", "bug", "feat", "backend"],
+        enum: ["frontend", "new", "testing", "bug", "feat", "backend", "fixed"],
       },
     ],
 
@@ -65,15 +71,9 @@ const taskSchema = new mongoose.Schema(
         ref: "Comment",
       },
     ],
-
-    guild: {
-      type: String,
-      enum: ["frontend", "backend", "devops", "tester"],
-    },
   },
   { timestamps: true }
 );
 
-
-const Task = mongoose.model('Task', taskSchema);
+const Task = mongoose.model("Task", taskSchema);
 module.exports = Task;

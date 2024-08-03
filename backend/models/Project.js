@@ -7,9 +7,15 @@ const projectSchema = new mongoose.Schema(
       required: [true, "project name is required"],
     },
 
+    description: {
+      type: String,
+      required: [true, "project description is required"],
+    },
+
     manager: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: [true, "project manager is required"],
     },
 
     owner: {
@@ -22,10 +28,6 @@ const projectSchema = new mongoose.Schema(
       required: [true, "project type is required"],
     },
 
-    isSelected: {
-      type: Boolean,
-    },
-
     teamMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
     budget: {
@@ -36,6 +38,11 @@ const projectSchema = new mongoose.Schema(
     startDate: {
       type: Date,
       required: [true, "project start date is required"],
+    },
+
+    status: {
+      type: String,
+      required: [true, "project status zone is required"],
     },
 
     deadline: {

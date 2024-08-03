@@ -17,6 +17,7 @@ import OnBoarding from "./pages/OnBoarding";
 import TaskDetails from "./pages/TaskDetails";
 import Project from "./pages/Project";
 import SuccessPage from "./pages/SuccessPage";
+import ProjectDetails from "./pages/ProjectDetails";
 
 const router = createBrowserRouter([
   {
@@ -56,12 +57,20 @@ const router = createBrowserRouter([
         element: <CreateNewProject />,
       },
       {
+        path: "edit-project/:id",
+        element: <CreateNewProject />,
+      },
+      {
         path: "task-details/:id",
         element: <TaskDetails />,
       },
       {
         path: "success",
         element: <SuccessPage />,
+      },
+      {
+        path: "project-details/:id",
+        element: <ProjectDetails />,
       },
     ],
   },

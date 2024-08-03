@@ -2,27 +2,57 @@ import React, { useState, useEffect } from "react";
 import ProjectCard from "../components/ProjectCard";
 import { Link } from "react-router-dom";
 import userStore from "../stores/userStore";
-
+import projectStore from "../stores/projectStore";
 import api from "../api";
 import ProjectNotCreated from "../components/ProjectNotCreated";
+import { Grid } from "react-loader-spinner";
+import Loader from "../components/Loader";
 
 const Project = () => {
   const [projectList, setProjectList] = useState([]);
-  const { userDetails } = userStore();
+  const [loader, setLoader] = useState(false);
 
-  const getProjectsListData = async () => {
+  const { userDetails, setUserDetails } = userStore();
+  const {
+    setProjectSelected,
+    setProjectStoreList,
+    selectedProjectId,
+    setSelectedProjectId,
+  } = projectStore();
+
+  const getUserDetail = async () => {
     try {
-      const resp = await api.get("/project/list");
-      const { data } = resp?.data;
-      console.log("project list: ", data)
-      setProjectList(data);
+      const resp = await api.get("/users/profile");
+      const id = resp?.data?.data?.selectedProject;
+      if (id) {
+        setProjectSelected(true);
+      } else setProjectSelected(false);
+      setSelectedProjectId(id);
+      setUserDetails(resp?.data?.data);
+      console.log("login user: ", resp?.data?.data);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const getProjectsListData = async () => {
+    setLoader(true);
+    try {
+      const resp = await api.get("/project/list");
+      const { data } = resp?.data;
+      console.log("project list: ", data);
+      setProjectList(data);
+      setProjectStoreList(data);
+      setLoader(false);
+    } catch (error) {
+      console.log(error);
+      setLoader(false);
+    }
+  };
+
   useEffect(() => {
     getProjectsListData();
+    getUserDetail();
   }, []);
 
   return (
@@ -45,10 +75,16 @@ const Project = () => {
         )}
       </div>
 
-      {projectList.length > 0 ? (
+      {loader ? (
+        <Loader title="Projects" />
+      ) : projectList.length > 0 ? (
         <div className="project-grid-box scrollable-container">
           {projectList.map((project) => (
-            <ProjectCard project={project} />
+            <ProjectCard
+              project={project}
+              selectedProjectId={selectedProjectId}
+              setSelectedProjectId={setSelectedProjectId}
+            />
           ))}
         </div>
       ) : (

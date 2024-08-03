@@ -401,6 +401,31 @@ nav {
   letter-spacing: 0.5px;
   font-size: 13px;
 }
+.card-top-text:hover {
+   color:#3030fb;
+}
+
+
+.view-detail {
+  display: flex;
+  align-items: center;
+  color: #585858;
+
+  p{
+     letter-spacing: 0.5px;
+     font-size: 13px;
+  }
+
+  svg{
+    width: 15px;
+    margin-left: 15px;
+  }
+}
+
+.view-detail:hover {
+  color:#3030fb;
+}
+
 
 .user-circle,
 .user-circle-rest {
@@ -467,9 +492,16 @@ nav {
 }
 
 .project-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* background-color: #04bb6f; */
   margin-top: 10px;
   border-top: 0.5px solid #dcdcdc;
-  padding: 10px 0px 20px 0px;
+  height: 140px;
+  /* height: 82%; */
+  padding-top: 7px;
+  padding-bottom: 5px;
 
   h2 {
     font-size: 20px;
@@ -492,14 +524,16 @@ nav {
 .project-selected,
 .project-unselected {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   background-color: #3030fb;
-  padding: 5px 15px 5px 5px;
+  width: 150px;
+  height: 30px;
   font-family: "Urbanist", sans-serif;
 
   svg {
-    width: 20px;
+    width: 18px;
+    margin-right: 3px;
   }
 
   p {
@@ -698,7 +732,7 @@ nav {
   margin-bottom: 20px;
 }
 
-.ovr-sprint, .tech-box {
+.ovr-sprint, .guild-box {
   width: 45%;
   height: 27px;
   padding: 10px;
@@ -721,12 +755,14 @@ nav {
   background-color: rgb(77, 74, 155) !important;
 }
 
-.tech-box {
+.guild-box {
   height: 25px;
+  width: 140px;
   background-color: #04bb6f;
+  padding-left: 8px;
 
   .circle {
-    margin-right: 8px;
+     margin-right: 7px;
      background-color: rgb(255, 255, 255);
   }
 }
@@ -752,6 +788,8 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 12px;
+  
 }
 
 .ovr-assigned {
@@ -775,7 +813,7 @@ nav {
   display: flex;
   align-items: center;
 
-  > :first-child {
+  .profile {
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -791,17 +829,17 @@ nav {
 }
 
 .board-container {
-  height: 100vh;
+  height: 80vh;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin-top: 20px;
+  margin-top: 12px;
 }
 
 .board-box {
   height: 100%;
   border-right: 0.5px solid rgb(214, 214, 214);
-  padding: 0px 12px;
+  padding: 0px 10px;
 }
 
 .board-box:first-child {
@@ -840,6 +878,7 @@ nav {
   cursor: pointer;
   border: 0.5px solid #a2a2a2;
   padding: 8px 8px 0px 8px;
+  margin-top: 12px;
 
   .date {
     font-family: "Urbanist", sans-serif;
@@ -851,9 +890,8 @@ nav {
   }
 }
 
- .tech {
+ .priority {
     height: 16px;
-    background-color: rgb(171, 165, 236);
     font-family: "Urbanist", sans-serif;
     font-size: 10px;
     color: #ffffff;
@@ -864,12 +902,24 @@ nav {
     align-items: center;
     padding: 0px 8px;
     text-transform: uppercase;
-
   }
+
+.low {
+  background-color: #ABA5EC;
+}
+
+.medium {
+  background-color: #5093D2;
+}
+.high {
+  background-color: #F0963C;
+}
 
 .task-text {
   margin-top: 2px;
   font-size: 14px;
+  /* background-color: #1c1cee; */
+  height: 42px;
 }
 .mar-t-6 {
   margin-top: 6px;
@@ -980,9 +1030,10 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   padding: 0px 100px;
-  height: 85px;
+  height: 80px;
+  /* background-color: red; */
 
   .field {
     height: 100%;
@@ -994,14 +1045,22 @@ nav {
   height: 100px;
 }
 
-.project-input {
+
+.project-input, .project-desc-input {
   width: 450px;
   height: 40px;
   background-color: transparent !important;
   border: 0.5px solid #acacac;
   outline: none;
-  padding-left: 10px;
+  padding: 0px 10px;
   margin-top: 5px;
+}
+
+.desc-field {
+  width: 100%;
+}
+.project-desc-input {
+  width: 100%;
 }
 
 .project-input::placeholder {
@@ -1023,7 +1082,7 @@ nav {
 .project-btn-box {
   display: flex;
   justify-content: center;
-  margin-top: 70px;
+  margin-top: 50px;
   padding: 0px 100px;
 
   .btn {
@@ -1041,7 +1100,24 @@ nav {
      background-color: #fff;
      color: #000;
      margin-right: 20px;
+     transition: 0.5s transform ease-in-out;
   }
+
+  .cancle:hover {
+    background-color: red;
+    color: #fff;
+  }
+}
+
+.delete:hover {
+   background-color: red;
+    color: #fff;
+}
+
+.btn-left {
+  justify-content: flex-start !important;
+  padding: 0px !important;
+  /* margin-top: 5px !important; */
 }
 
 .ant-picker {
@@ -1103,16 +1179,15 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 
   p {
     width: 35%;
   }
 
-
   .task-input {
     width: 60%;
-    padding-left: 0px !important;
+    border: none !important;
   }
 
 }
@@ -1201,6 +1276,91 @@ nav {
   color: #fff;
   font-size: 24px;
 }
+
+.project-detail-box {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 25px; 
+
+}
+
+ .square-box {
+     border: 0.5px solid #acacac;
+     display: flex;
+     flex-direction: column;
+     padding: 14px;
+     background-color: #fff;
+
+
+     h3 {
+      font-size: 16px;
+      /* color:#3030fb; */
+      /* font-weight: 500; */
+      margin-top: 2px;
+     }
+
+     p{
+      font-size: 13px;
+      font-weight: 600;
+      color:#373737;
+      color:#3030fb;
+    
+     }
+
+     .para {
+        font-weight: 400;
+        margin-top: 2px;
+        color: #000
+     }
+  }
+
+  .project-detail-task {
+    height: 145px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+
+    .task-box {
+      display: flex;
+      justify-content: flex-start;
+      padding-left: 24px;
+      align-items: center;
+    }
+
+    .task-box:nth-child(1) {
+      border-bottom: 0.5px solid #acacac;
+      border-right: 0.5px solid #acacac;
+    }
+
+    .task-box:nth-child(2) {
+      border-bottom: 0.5px solid #acacac;
+    }
+
+    .task-box:nth-child(3) {
+      border-right: 0.5px solid #acacac;
+      border-bottom: 0.5px solid #acacac;
+    }
+
+    .task-box:nth-child(4) {
+      border-bottom: 0.5px solid #acacac;
+    }
+  }
+
+  .draggable-area {
+    height: 75vh;
+    width: 100%;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+    display: none;
+  }
+  
+    scrollbar-width: none;  
+  }
+
 
 
 

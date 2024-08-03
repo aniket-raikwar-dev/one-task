@@ -5,8 +5,14 @@ const projectStore = create(
   persist(
     (set) => ({
       projectDetails: null,
-      setProjectDetails: (data) => set({ projectDetails: data }),
+      isProjectSelected: false,
+      projectStoreList: [],
+      selectedProjectId: "",
+      setProjectDetails: (payload) => set({ projectDetails: payload }),
       clearProjectDetails: () => set({ projectDetails: null }),
+      setProjectSelected: (payload) => set({ isProjectSelected: payload }),
+      setProjectStoreList: (payload) => set({ projectStoreList: payload }),
+      setSelectedProjectId: (payload) => set({ selectedProjectId: payload }),
     }),
     {
       name: "project-storage",

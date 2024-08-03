@@ -1,6 +1,16 @@
-const express = require('express');
+const express = require("express");
+const isUserLogin = require("../middlewares/isUserLogin");
+const {
+  createTaskCtrl,
+  getAllTaskByProjectCtrl,
+  deleteTaskCtrl,
+} = require("../controllers/taskController");
 const taskRouter = express.Router();
 
+taskRouter.get("/:id", isUserLogin, getAllTaskByProjectCtrl);
 
+taskRouter.post("/create", isUserLogin, createTaskCtrl);
 
-module.exports = taskRouter
+taskRouter.delete("/delete", isUserLogin, deleteTaskCtrl);
+
+module.exports = taskRouter;

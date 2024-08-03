@@ -11,7 +11,7 @@ const columns = [
     key: "name",
     render: (text, record) => (
       <div className="table-assigned">
-        <div>
+        <div className="profile">
           <img src={record?.profilePhoto} alt={text} />
         </div>
         <div>{text}</div>

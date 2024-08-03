@@ -5,6 +5,7 @@ const {
   getAllUsersCtrl,
   getUserProfileCtrl,
   updateUserProfileCtrl,
+  updateSelectedProjectCtrl,
 } = require("../controllers/userController");
 const isUserLogin = require("../middlewares/isUserLogin");
 const userRouter = express.Router();
@@ -33,5 +34,8 @@ userRouter.put(
   upload.single("profilePhoto"),
   updateUserProfileCtrl
 );
+
+// PUT: update selected project
+userRouter.put('/selected-project', isUserLogin, updateSelectedProjectCtrl)
 
 module.exports = userRouter;

@@ -125,10 +125,30 @@ const updateUserProfileCtrl = async (req, res, next) => {
   }
 };
 
+// PUT => UPDATE SELECTED PROJECT ID
+const updateSelectedProjectCtrl = async (req, res, next) => {
+  const { projectId } = req.body;
+  const userId = req.userAuthID;
+
+  try {
+    await User.findByIdAndUpdate(userId, {
+      $set: { selectedProject: projectId },
+    });
+
+    res.json({
+      status: "200",
+      message: "User's selected project updated successfully",
+    });
+  } catch (error) {
+    next(new Error(error));
+  }
+};
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
   getAllUsersCtrl,
   getUserProfileCtrl,
   updateUserProfileCtrl,
+  updateSelectedProjectCtrl,
 };

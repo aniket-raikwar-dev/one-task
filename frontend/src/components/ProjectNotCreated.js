@@ -5,7 +5,7 @@ import userStore from "../stores/userStore";
 
 const ProjectNotCreated = () => {
   const { userDetails } = userStore();
-  console.log("userDateola: ", userDetails);
+
   return (
     <div className="flex w-full flex-col items-center mt-24">
       <img className="w-52" src={NoDataImg} alt="no-data" />
