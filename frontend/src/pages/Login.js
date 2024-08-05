@@ -6,7 +6,7 @@ import AuthImage1 from "../images/auth1.png";
 import AuthImage2 from "../images/auth2.png";
 import AuthImage3 from "../images/auth3.png";
 import Loader from "../images/loader.gif";
-import api from "../api";
+import api from "../services/api";
 import axios from "axios";
 import userStore from "../stores/userStore";
 

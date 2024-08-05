@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import Female2 from "../images/female2.png";
 import SearchBar from "../components/SearchBar";
-import api from "../api";
+import api from "../services/api";
 
 const columns = [
   {

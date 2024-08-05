@@ -12,7 +12,7 @@ import moment from "moment";
 import CustomPrioritySelect from "./CustomPrioritySelect";
 import CustomTeamSelect from "./CustomTeamSelect";
 import { Field, Formik, Form } from "formik";
-import api from "../api";
+import api from "../services/api";
 import taskStore from "../stores/taskStore";
 
 const NewTaskDrawer = ({

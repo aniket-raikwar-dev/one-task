@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Gantt from "frappe-gantt";
 import projectStore from "../stores/projectStore";
-import api from "../api";
+import api from "../services/api";
 
 const tasks = [
   {

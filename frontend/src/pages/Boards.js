@@ -3,7 +3,7 @@ import { Button, Drawer } from "antd";
 import BoardCard from "../components/BoardCard";
 import SearchBar from "../components/SearchBar";
 import NewTaskDrawer from "../components/NewTaskDrawer";
-import api from "../api";
+import api from "../services/api";
 import projectStore from "../stores/projectStore";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 

@@ -6,7 +6,7 @@ import {
   PlusOutlined,
   CheckOutlined,
 } from "@ant-design/icons";
-import api from "../api";
+import api from "../services/api";
 import Loader from "../images/loader.gif";
 import RightArrow from "../images/rightArrow.png";
 import userStore from "../stores/userStore";

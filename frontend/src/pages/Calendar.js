@@ -5,7 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import SearchBar from "../components/SearchBar";
-import api from "../api";
+import api from "../services/api";
 import projectStore from "../stores/projectStore";
 
 const dummyEvents = [

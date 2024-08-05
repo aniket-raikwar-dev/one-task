@@ -7,7 +7,7 @@ import AuthImage1 from "../images/auth1.png";
 import AuthImage2 from "../images/auth2.png";
 import AuthImage3 from "../images/auth3.png";
 import Loader from "../images/loader.gif";
-import api from "../api";
+import api from "../services/api";
 import userStore from "../stores/userStore";
 
 const bgColor = ["#3030fb", "#3030fb", "#A641FF", "#ff40dc"];

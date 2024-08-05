@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Loader from "../images/loader.gif";
-import api from "../api";
+import api from "../services/api";
 import { Link } from "react-router-dom";
 
 const ProjectCard = ({ project, selectedProjectId, setSelectedProjectId }) => {
