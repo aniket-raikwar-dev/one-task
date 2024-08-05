@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Gantt from "frappe-gantt";
+import projectStore from "../stores/projectStore";
+import api from "../api";
 
 const tasks = [
   {
@@ -17,7 +19,7 @@ const tasks = [
     start: "2024-4-03",
     end: "2024-4-10",
     progress: 30,
-    dependencies: "Copy Full Site",
+    dependencies: ["Copy Full Site", "Delivery Copy Site v2"],
     custom_class: "orange",
   },
   {
@@ -86,8 +88,41 @@ const tasks = [
   },
 ];
 
+const customClasses = ["blue", "orange", "purple", "green"];
+
 const TimelineView = ({ timelineView, isSmallView }) => {
+  const [taskData, setTaskData] = useState([]);
   console.log("timeline: ", isSmallView);
+
+  const { selectedProjectId } = projectStore();
+  console.log("selectedProjectId: ", selectedProjectId);
+
+  const getTasksBySelectedProject = async () => {
+    try {
+      const resp = await api.get(`/task/${selectedProjectId}`);
+      const { data } = resp?.data;
+      const tasks = formatTimelineData(data);
+      setTaskData(tasks);
+      console.log("task data: ", data);
+      console.log("timeline: ", tasks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const formatTimelineData = (data = []) => {
+    const formatData = data.map((item, index) => ({
+      id: item?._id,
+      name: item?.title,
+      start: item?.createdAt,
+      end: item?.dueDate ? item?.dueDate : item?.updatedAt,
+      progress: item?.progress,
+      dependencies: item?.dependencies,
+      custom_class: customClasses[index % customClasses.length],
+    }));
+
+    return formatData;
+  };
 
   useEffect(() => {
     const gantt = new Gantt("#gantt", tasks, {
@@ -98,7 +133,6 @@ const TimelineView = ({ timelineView, isSmallView }) => {
       bar_corner_radius: 3,
       arrow_curve: isSmallView ? 5 : 8,
       padding: isSmallView ? 22 : 28,
-      
     });
 
     const ganttContainer = document.querySelector(".gantt-container");
@@ -107,6 +141,8 @@ const TimelineView = ({ timelineView, isSmallView }) => {
     } else {
       ganttContainer.classList.remove("big-gantt");
     }
+
+    getTasksBySelectedProject();
   }, [timelineView]);
 
   return (

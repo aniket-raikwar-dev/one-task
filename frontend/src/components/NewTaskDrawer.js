@@ -6,12 +6,14 @@ import {
   priorityOptions,
   estimationOptions,
   guildOptions,
+  progressOptions,
 } from "../utils/taskOptionsData";
 import moment from "moment";
 import CustomPrioritySelect from "./CustomPrioritySelect";
 import CustomTeamSelect from "./CustomTeamSelect";
 import { Field, Formik, Form } from "formik";
 import api from "../api";
+import taskStore from "../stores/taskStore";
 
 const NewTaskDrawer = ({
   open,
@@ -20,7 +22,12 @@ const NewTaskDrawer = ({
   teamOptions,
   projectId,
   managerId,
+  dependenciesOptions,
 }) => {
+  const { taskDetails } = taskStore();
+
+  console.log("task details: ", taskDetails);
+
   useEffect(() => {
     function autosize() {
       const textareas = document.querySelectorAll(".autosize");
@@ -45,6 +52,15 @@ const NewTaskDrawer = ({
 
   const handleDueDate = (value, setFieldValue) => {
     setFieldValue("dueDate", moment(new Date(value)).format("YYYY-MM-DD"));
+  };
+
+  const deleteTask = async () => {
+    try {
+      const resp = await api.delete(`/task/delete/${taskDetails?._id}`);
+      console.log("delete resp: ", resp);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSubmit = async (values) => {
@@ -80,7 +96,7 @@ const NewTaskDrawer = ({
 
       <div className="flex">
         {!isNewTask && (
-          <div className="btn-create ml-3">
+          <div className="btn-create ml-3" onClick={deleteTask}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -117,6 +133,8 @@ const NewTaskDrawer = ({
           estimation: "",
           dueDate: null,
           priority: "",
+          progress: 0,
+          dependencies: [],
           guild: "",
           description: "",
         }}
@@ -131,12 +149,12 @@ const NewTaskDrawer = ({
                 className="task-title-input autosize w-full"
                 placeholder="Task title here..."
                 autoComplete="off"
+                rows={1}
                 autoFocus
               />
               <div className="task-row mt-1">
                 <p>Assignee :</p>
                 <CustomTeamSelect
-                  id="assignee"
                   name="assignee"
                   mode="single"
                   placeholder="-"
@@ -151,7 +169,6 @@ const NewTaskDrawer = ({
                 <p>Status :</p>
                 <Select
                   mode="single"
-                  id="status"
                   name="status"
                   className="task-input"
                   placeholder="-"
@@ -168,7 +185,6 @@ const NewTaskDrawer = ({
                 <Select
                   mode="single"
                   name="estimation"
-                  id="estimation"
                   className="task-input"
                   placeholder="-"
                   options={estimationOptions}
@@ -182,7 +198,6 @@ const NewTaskDrawer = ({
                 <p>Due Date :</p>
                 <DatePicker
                   name="dueDate"
-                  id="dueDate"
                   className="task-input"
                   placeholder="-"
                   onChange={(value) => handleDueDate(value, setFieldValue)}
@@ -203,11 +218,40 @@ const NewTaskDrawer = ({
               </div>
 
               <div className="task-row">
+                <p>Progress :</p>
+                <Select
+                  mode="single"
+                  name="progress"
+                  className="task-input"
+                  placeholder="-"
+                  options={progressOptions}
+                  optionRender={(option) => <Space>{option.data.label}</Space>}
+                  onChange={(value) => {
+                    setFieldValue("progress", value);
+                  }}
+                />
+              </div>
+
+              <div className="task-row">
+                <p>Dependencies :</p>
+                <Select
+                  mode="multiple"
+                  name="dependencies"
+                  className="task-input"
+                  placeholder="-"
+                  options={dependenciesOptions}
+                  optionRender={(option) => <Space>{option.data.label}</Space>}
+                  onChange={(value) => {
+                    setFieldValue("dependencies", value);
+                  }}
+                />
+              </div>
+
+              <div className="task-row">
                 <p>Guild :</p>
                 <Select
                   name="guild"
                   mode="single"
-                  id="guild"
                   className="task-input"
                   placeholder="-"
                   options={guildOptions}
@@ -222,20 +266,20 @@ const NewTaskDrawer = ({
                 <Field
                   as="textarea"
                   name="description"
-                  rows={5}
+                  rows={2}
                   className="task-desc-input w-full"
                   placeholder="Add a description here..."
                   autoComplete="off"
                 />
               </div>
             </div>
-            <div className="">
+            <div className="mt-1">
               <button
                 type="submit"
                 className="btn-create save w-full"
                 disabled={isSubmitting}
               >
-                Save Task
+                {isNewTask ? "Save Task" : "Update Task"}
               </button>
             </div>
           </Form>

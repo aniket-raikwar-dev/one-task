@@ -15,9 +15,20 @@ const taskSchema = new mongoose.Schema(
       type: String,
     },
 
+    progress: {
+      type: Number,
+    },
+
+    dependencies: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+      },
+    ],
+
     priority: {
       type: String,
-      enum: ["low", "medium", "high"],
+      enum: ["low", "normal p1", "normal p2", "high p1", "high p2"],
     },
 
     reportee: {

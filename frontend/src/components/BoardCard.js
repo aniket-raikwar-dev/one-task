@@ -1,10 +1,18 @@
-import React from "react";
-import Male1 from "../images/male1.png";
+import React, { useEffect } from "react";
 import { formatDate } from "../utils/formatDate";
+import taskStore from "../stores/taskStore";
 
 const BoardCard = ({ task, showDrawer }) => {
+  const { setTaskDetails } = taskStore();
+
   return (
-    <div className="board-card" onClick={() => showDrawer(false)}>
+    <div
+      className="board-card"
+      onClick={() => {
+        showDrawer(false);
+        setTaskDetails(task);
+      }}
+    >
       <div className="board-card-top">
         <div className="flex justify-between">
           <div className="date">{formatDate(task?.createdAt)}</div>

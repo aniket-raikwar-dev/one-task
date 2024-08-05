@@ -5,11 +5,59 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import SearchBar from "../components/SearchBar";
+import api from "../api";
+import projectStore from "../stores/projectStore";
+
+const dummyEvents = [
+  {
+    id: "1",
+    title: "Project Kickoff Meeting",
+    start: "2024-08-10T10:00:00",
+    end: "2024-08-10T11:30:00",
+  },
+  {
+    id: "2",
+    title: "Client Presentation",
+    start: "2024-08-15T14:00:00",
+    end: "2024-08-15T16:00:00",
+  },
+  {
+    id: "3",
+    title: "Team Building Event",
+    start: "2024-08-20",
+    end: "2024-08-21",
+    allDay: true,
+  },
+  {
+    id: "4",
+    title: "Product Launch",
+    start: "2024-08-25T09:00:00",
+    end: "2024-08-25T18:00:00",
+  },
+  {
+    id: "5",
+    title: "Sprint Planning",
+    start: "2024-08-05T13:00:00",
+    end: "2024-08-05T15:00:00",
+    recurring: true,
+    daysOfWeek: [1],
+  },
+];
+
+const customClasses = [
+  "event-purple",
+  "event-green",
+  "event-blue",
+  "event-orange",
+];
 
 const CalendarPage = ({ collapsed }) => {
   const calendarRef = useRef(null);
   const [calendarView, setCalendarView] = useState("dayGridMonth");
+  const [events, setEvents] = useState([]);
   const [calendarDate, setCalendarDate] = useState("");
+
+  const { selectedProjectId } = projectStore();
 
   console.log("date: ", calendarDate);
 
@@ -19,6 +67,31 @@ const CalendarPage = ({ collapsed }) => {
       calendarRef.current.getApi().changeView(view);
       setCalendarDate(calendarRef.current.getApi().view.title);
     }
+  };
+
+  const getTasksDataBySelectedProject = async () => {
+    try {
+      const resp = await api.get(`/task/${selectedProjectId}`);
+      const { data } = resp?.data;
+      const eventData = formatCalendarEvent(data);
+      setEvents(eventData);
+      console.log("data: ", eventData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const formatCalendarEvent = (events) => {
+    const formattedEvent = events.map((event, index) => ({
+      id: `w-${event?._id}`,
+      title: event?.title,
+      start: event?.createdAt,
+      end: event?.dueDate ? event?.dueDate : event?.updatedAt,
+      allDay: true,
+      className: customClasses[index % customClasses.length],
+    }));
+
+    return formattedEvent;
   };
 
   useEffect(() => {
@@ -54,12 +127,14 @@ const CalendarPage = ({ collapsed }) => {
     if (calendarRef.current) {
       calendarRef.current.getApi().handleRenderRequest();
     }
+
+    getTasksDataBySelectedProject();
   }, [collapsed]);
 
   return (
     <div>
       <div className="flex justify-between items-center border-b pb-3">
-        <h2 className="page-title">Calendar Page</h2>
+        <h2 className="page-title">Calendar</h2>
         <div className="flex">
           <SearchBar />
           <div className="date-box ml-3">
@@ -110,11 +185,21 @@ const CalendarPage = ({ collapsed }) => {
             listPlugin,
           ]}
           initialView={calendarView}
-          // events={[
-          //   { title: "Event 1", date: "2024-06-23" },
-          //   { title: "Event 2", date: "2024-06-25" },
-          // ]}
           headerToolbar={false}
+          events={events}
+          // eventContent={(eventInfo) => (
+          //   <>
+          //     <b>{eventInfo.timeText}</b>
+          //     <i>{eventInfo.event.title}</i>
+          //   </>
+          // )}
+          // eventClick={(info) => {
+          //   alert(
+          //     `Event: ${info.event.title}\nStart: ${info.event.start}\nEnd: ${
+          //       info.event.end || "N/A"
+          //     }`
+          //   );
+          // }}
           views={{
             timeGridWeek: {
               type: "timeGrid",

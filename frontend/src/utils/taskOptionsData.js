@@ -5,10 +5,27 @@ export const statusOptions = [
   { label: "Done", value: "Done", color: "#2683ff" },
 ];
 
+export const progressOptions = [
+  { label: "0%", value: "0" },
+  { label: "10%", value: "10" },
+  { label: "15%", value: "15" },
+  { label: "25%", value: "25" },
+  { label: "35%", value: "35" },
+  { label: "45%", value: "45" },
+  { label: "50%", value: "50" },
+  { label: "65%", value: "65" },
+  { label: "75%", value: "75" },
+  { label: "85%", value: "85" },
+  { label: "95%", value: "95" },
+  { label: "100%", value: "100" },
+];
+
 export const priorityOptions = [
   { label: "LOW", value: "low", color: "#ABA5EC" },
-  { label: "MEDIUM", value: "medium", color: "#5093D2" },
-  { label: "HIGH", value: "high", color: "#F0963C" },
+  { label: "NORMAL P1", value: "normal p1", color: "#5093D2" },
+  { label: "NORMAL P2", value: "normal p2", color: "#5093D2" },
+  { label: "HIGH P1", value: "high p1", color: "#F0963C" },
+  { label: "HIGH P2", value: "high p2", color: "#F0963C" },
 ];
 
 export const estimationOptions = [

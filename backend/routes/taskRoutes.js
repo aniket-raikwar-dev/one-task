@@ -11,6 +11,6 @@ taskRouter.get("/:id", isUserLogin, getAllTaskByProjectCtrl);
 
 taskRouter.post("/create", isUserLogin, createTaskCtrl);
 
-taskRouter.delete("/delete", isUserLogin, deleteTaskCtrl);
+taskRouter.delete("/delete/:id", isUserLogin, deleteTaskCtrl);
 
 module.exports = taskRouter;

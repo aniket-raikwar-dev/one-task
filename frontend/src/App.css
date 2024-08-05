@@ -847,8 +847,8 @@ nav {
 }
 .board-circle,
 .to-do,
-.in-prog,
-.testing,
+.in-progress,
+.in-review,
 .done {
   width: 10px;
   height: 10px;
@@ -858,11 +858,11 @@ nav {
 .to-do {
   background-color: #3030fb;
 }
-.in-prog {
+.in-progress {
   background-color: #04bb6f;
 }
 
-.testing {
+.in-review {
   background-color: #ff991f;
 }
 .done {
@@ -905,14 +905,13 @@ nav {
   }
 
 .low {
-  background-color: #ABA5EC;
+  background-color: #337eef;
 }
-
-.medium {
-  background-color: #5093D2;
+.normal {
+  background-color: #7c70fc;
 }
 .high {
-  background-color: #F0963C;
+  background-color: #f0633c;
 }
 
 .task-text {
@@ -1179,7 +1178,7 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 
   p {
     width: 35%;
@@ -1361,6 +1360,37 @@ nav {
     scrollbar-width: none;  
   }
 
+  .ant-drawer-header {
+    padding: 10px 24px !important;
+  }
+
+.fc-event {
+  padding: 2px 10px;
+  border-radius: 2px;
+  font-size: 0.85em;
+  font-weight: 500;
+  border: none;
+}
+
+.fc-event:hover {
+  filter: brightness(85%);
+}
+
+.event-purple {
+  background-color: #3030fb;
+}
+
+.event-green {
+  background-color: #05d27c;
+}
+
+.event-blue {
+  background-color: #2683ff;
+}
+
+.event-orange {
+  background-color: #ff991f;
+}
 
 
 
