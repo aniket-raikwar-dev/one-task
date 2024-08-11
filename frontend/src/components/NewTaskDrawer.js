@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DatePicker, Drawer, Select, Space } from "antd";
 import { Link } from "react-router-dom";
+import Loader from "../images/loader.gif";
 import {
   statusOptions,
   priorityOptions,
@@ -23,10 +24,11 @@ const NewTaskDrawer = ({
   projectId,
   managerId,
   dependenciesOptions,
+  onTaskUpdate,
 }) => {
+  const [loader, setLoader] = useState(false);
+  const [deleteLoader, setDeleteLoader] = useState(false);
   const { taskDetails } = taskStore();
-
-  console.log("task details: ", taskDetails);
 
   useEffect(() => {
     function autosize() {
@@ -55,33 +57,49 @@ const NewTaskDrawer = ({
   };
 
   const deleteTask = async () => {
+    setDeleteLoader(true);
     try {
       const resp = await api.delete(`/task/delete/${taskDetails?._id}`);
       console.log("delete resp: ", resp);
+      onTaskUpdate();
+      onClose();
     } catch (error) {
       console.log(error);
+    } finally {
+      setDeleteLoader(false);
     }
   };
 
   const handleSubmit = async (values) => {
+    setLoader(true);
+    const body = {
+      ...values,
+      managerId,
+      projectId,
+    };
     try {
-      const resp = await api.post("/task/create", {
-        ...values,
-        managerId,
-        projectId,
-      });
-      console.log("task create: ", resp);
+      console.log("bodies: ", body);
+      if (isNewTask) {
+        const resp = await api.post("/task/create", body);
+        console.log("new task: ", resp);
+      } else {
+        const resp = await api.put(`/task/update/${taskDetails?._id}`, body);
+        console.log("update task: ", resp);
+      }
+      onTaskUpdate();
+      onClose();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoader(false);
     }
-    console.log("task values: ", values);
   };
   const drawerTitle = (
     <div className="flex justify-between items-center w-full">
       {isNewTask ? (
         <div></div>
       ) : (
-        <Link to="/task-details/12">
+        <Link to={`/task-details/${taskDetails?._id}`}>
           <div className="btn-icons">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -96,15 +114,21 @@ const NewTaskDrawer = ({
 
       <div className="flex">
         {!isNewTask && (
-          <div className="btn-create ml-3" onClick={deleteTask}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 4V6H15V4H9Z"></path>
-            </svg>
-            Delete
+          <div className="btn-create delete ml-3" onClick={deleteTask}>
+            {deleteLoader ? (
+              <img className="w-10" src={Loader} alt="" />
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 4V6H15V4H9Z"></path>
+                </svg>
+                Delete
+              </>
+            )}
           </div>
         )}
 
@@ -127,16 +151,16 @@ const NewTaskDrawer = ({
       <Formik
         enableReinitialize
         initialValues={{
-          title: "",
-          assignee: "",
-          status: "",
-          estimation: "",
+          title: isNewTask ? "" : taskDetails?.title || "",
+          assignee: isNewTask ? undefined : taskDetails?.assignee?._id || "",
+          status: isNewTask ? undefined : taskDetails?.status || "",
+          estimation: isNewTask ? undefined : taskDetails?.estimation || "",
           dueDate: null,
-          priority: "",
-          progress: 0,
-          dependencies: [],
-          guild: "",
-          description: "",
+          priority: isNewTask ? undefined : taskDetails?.priority || "",
+          progress: isNewTask ? 0 : taskDetails?.progress || 0,
+          dependencies: isNewTask ? [] : taskDetails?.dependencies || [],
+          guild: isNewTask ? undefined : taskDetails?.guild || "",
+          description: isNewTask ? undefined : taskDetails?.description || "",
         }}
         onSubmit={handleSubmit}
       >
@@ -163,6 +187,7 @@ const NewTaskDrawer = ({
                   onChange={(value) => {
                     setFieldValue("assignee", value);
                   }}
+                  value={values.assignee}
                 />
               </div>
               <div className="task-row mt-1">
@@ -177,6 +202,7 @@ const NewTaskDrawer = ({
                   onChange={(value) => {
                     setFieldValue("status", value);
                   }}
+                  value={values.status}
                 />
               </div>
 
@@ -192,6 +218,7 @@ const NewTaskDrawer = ({
                   onChange={(value) => {
                     setFieldValue("estimation", value);
                   }}
+                  value={values.estimation}
                 />
               </div>
               <div className="task-row">
@@ -214,6 +241,7 @@ const NewTaskDrawer = ({
                   onChange={(value) => {
                     setFieldValue("priority", value);
                   }}
+                  value={values.priority}
                 />
               </div>
 
@@ -229,6 +257,7 @@ const NewTaskDrawer = ({
                   onChange={(value) => {
                     setFieldValue("progress", value);
                   }}
+                  value={values.progress}
                 />
               </div>
 
@@ -244,6 +273,7 @@ const NewTaskDrawer = ({
                   onChange={(value) => {
                     setFieldValue("dependencies", value);
                   }}
+                  value={values.dependencies}
                 />
               </div>
 
@@ -259,6 +289,7 @@ const NewTaskDrawer = ({
                   onChange={(value) => {
                     setFieldValue("guild", value);
                   }}
+                  value={values.guild}
                 />
               </div>
               <div className="">
@@ -279,7 +310,13 @@ const NewTaskDrawer = ({
                 className="btn-create save w-full"
                 disabled={isSubmitting}
               >
-                {isNewTask ? "Save Task" : "Update Task"}
+                {loader ? (
+                  <img className="w-10" src={Loader} alt="" />
+                ) : isNewTask ? (
+                  "Save Task"
+                ) : (
+                  "Update Task"
+                )}
               </button>
             </div>
           </Form>

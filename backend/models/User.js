@@ -63,6 +63,13 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
     },
+
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment"
+      }
+    ]
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );

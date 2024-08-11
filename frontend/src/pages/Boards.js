@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Drawer } from "antd";
 import BoardCard from "../components/BoardCard";
 import SearchBar from "../components/SearchBar";
 import NewTaskDrawer from "../components/NewTaskDrawer";
 import api from "../services/api";
 import projectStore from "../stores/projectStore";
+import taskStore from "../stores/taskStore";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const Boards = () => {
@@ -20,6 +20,7 @@ const Boards = () => {
   });
   const [managerId, setManagerId] = useState("");
   const { selectedProjectId } = projectStore();
+  const { setTeamOptionsStore, setDependenciesOptionsStore } = taskStore();
 
   const showDrawer = (boolean) => {
     setOpen(true);
@@ -42,9 +43,8 @@ const Boards = () => {
       };
       setColumns(newColumns);
       const formatOptions = formatDependenciesOptions(data);
-      console.log("task data: ", data);
-      console.log("dependenciesOption: ", formatOptions);
       setDependenciesOptions(formatOptions);
+      setDependenciesOptionsStore(formatOptions);
     } catch (error) {
       console.log(error);
     }
@@ -57,17 +57,14 @@ const Boards = () => {
     }));
   };
 
-  // console.log("column: ", columns);
-
   const getSelectedProjectTeamsData = async () => {
     try {
       const resp = await api.get(`/project/details/${selectedProjectId}`);
       const { data } = resp?.data;
-      console.log("data: ", data);
       setManagerId(data?.manager?.id);
       const teamsData = formattedTeamMemberData(data?.teamMembers);
       setTeamOptions(teamsData);
-      console.log("teamsData: ", teamsData);
+      setTeamOptionsStore(teamsData);
     } catch (error) {
       console.log(error);
     }
@@ -113,8 +110,21 @@ const Boards = () => {
     // Update the state
     setColumns({ ...columns });
 
+
     // Here you would typically make an API call to update the task's status on the backend
     // updateTaskStatus(reorderedItem.id, destination.droppableId);
+  };
+
+  const updateTaskStatusUsingButton = async () => {
+    const resp = await api.put(
+      `/task/update/bulk/status/${selectedProjectId}`,
+      { columns }
+    );
+    console.log("Reponse: ", resp);
+    try {
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -122,13 +132,21 @@ const Boards = () => {
     getSelectedProjectTeamsData();
   }, []);
 
+  const handleTaskUpdate = () => {
+    getTasksDataByProject();
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Boards</h2>
         <div className="flex">
           <SearchBar />
-          <div className="btn-create ml-3" onClick={() => showDrawer(true)}>
+          <div
+            className="btn-create ml-3"
+            // onClick={() => showDrawer(true)}
+            onClick={updateTaskStatusUsingButton}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -194,6 +212,7 @@ const Boards = () => {
         projectId={selectedProjectId}
         managerId={managerId}
         dependenciesOptions={dependenciesOptions}
+        onTaskUpdate={handleTaskUpdate}
       />
     </div>
   );

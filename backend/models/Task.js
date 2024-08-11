@@ -82,6 +82,21 @@ const taskSchema = new mongoose.Schema(
         ref: "Comment",
       },
     ],
+
+    links: [
+      {
+        id: String,
+        link: String,
+      },
+    ],
+
+    attachments: [
+      {
+        id: { type: String },
+        name: { type: String },
+        imageUrl: { type: String },
+      },
+    ],
   },
   { timestamps: true }
 );

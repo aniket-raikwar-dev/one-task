@@ -173,6 +173,8 @@ const CreateNewProject = () => {
     return errors;
   };
 
+  
+
   const safeMoment = (dateString) => {
     if (!dateString) return null;
     const date = moment(dateString);
@@ -207,7 +209,7 @@ const CreateNewProject = () => {
               ? moment(projectData.deadline)
               : null,
           }}
-          // validate={validate}
+          validate={validate}
           onSubmit={(values, { setSubmitting }) => {
             handleSubmit(values);
           }}

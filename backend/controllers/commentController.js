@@ -1,4 +1,4 @@
-const Comment = requir("../models/Comment.js");
+const Comment = require("../models/Comment.js");
 const User = require("../models/User.js");
 const Task = require("../models/Task.js");
 
@@ -22,14 +22,15 @@ const getAllCommentsCtrl = async (req, res, next) => {
 
 // POST => CREATE NEW COMMENT
 const createCommentCtrl = async (req, res, next) => {
-  const { userId, description } = req.body;
+  const taskId = req.params.taskId;
+  const { commentText } = req.body;
   try {
-    const task = await Task.findById(req.params.id);
-    const user = await User.findById(userId);
+    const task = await Task.findById(taskId);
+    const user = await User.findById(req.userAuthID);
     const comment = await Comment.create({
       task: task._id,
-      user: userId,
-      description: description,
+      user: req.userAuthID,
+      text: commentText,
     });
     task.comments.push(comment._id);
     user.comments.push(comment._id);
@@ -49,12 +50,24 @@ const createCommentCtrl = async (req, res, next) => {
 
 // DELETE => DELETE COMMENT
 const deleteCommentCtrl = async (req, res, next) => {
+  const { commentId, taskId } = req.params;
   try {
-    const comment = await Comment.findById(req.params.id);
-    if (comment.user.toString() !== req.userAuthID.toString()) {
-      return next(new Error("You are not allowed to delete this comment"));
-    }
-    await Comment.findByIdAndDelete(req.params.id);
+    const task = await Task.findById(taskId);
+    const user = await User.findById(req.userAuthID);
+
+    task.comments = task.comments.filter(
+      (comment) => comment.toString() !== commentId
+    );
+
+    user.comments = user.comments.filter(
+      (comment) => comment.toString() !== commentId
+    );
+
+    await task.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false });
+
+    await Comment.findByIdAndDelete(commentId);
+
     res.json({
       status: "200",
       message: "Comment deleted successfully",
@@ -65,8 +78,28 @@ const deleteCommentCtrl = async (req, res, next) => {
   }
 };
 
+// PUT -> Update the comment
+const updateCommentCrtl = async (req, res, next) => {
+  const { commentId } = req.params;
+  const { updatedText } = req.body;
+  try {
+    const comment = await Comment.findById(commentId);
+    comment.text = updatedText;
+
+    await comment.save({ validateBeforeSave: false });
+
+    res.json({
+      status: "200",
+      message: "Comment updated successfully",
+      data: "comment updated",
+    });
+  } catch (error) {
+    next(new Error(error));
+  }
+};
+
 module.exports = {
-  getAllComments,
   createCommentCtrl,
-  deleteCommentCtrl
+  deleteCommentCtrl,
+  updateCommentCrtl,
 };

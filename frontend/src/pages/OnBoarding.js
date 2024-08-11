@@ -79,8 +79,10 @@ const OnBoarding = () => {
     }
     const file = info.file.originFileObj;
     setFileList(file);
-    setIsImageUploaded(true);
-    setLoading(false);
+    setTimeout(() => {
+      setIsImageUploaded(true);
+      setLoading(false);
+    }, 1000);
   };
 
   const updateUserDetail = async (values) => {
@@ -147,7 +149,6 @@ const OnBoarding = () => {
                   listType="picture-circle"
                   className="avatar-uploader"
                   showUploadList={false}
-                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                   beforeUpload={beforeUpload}
                   onChange={handlePhotoUpload}
                 >

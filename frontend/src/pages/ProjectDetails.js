@@ -3,12 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { formatDate } from "../utils/formatDate";
 import ConfirmationModal from "../components/ConfirmationModal";
+import taskStore from "../stores/taskStore";
 
 const ProjectDetails = () => {
   const [projectData, setProjectData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
+  
 
   const getProjectDetailsData = async () => {
     try {

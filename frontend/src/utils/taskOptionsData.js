@@ -1,31 +1,31 @@
 export const statusOptions = [
   { label: "To Do", value: "To Do", color: "#3030fb" },
-  { label: "In Progress", value: "In Progress", color: "#04bb6f" },
+  { label: "In Progress", value: "In Progress", color: "#2683ff" },
   { label: "In Review", value: "In Review", color: "#ff991f" },
-  { label: "Done", value: "Done", color: "#2683ff" },
+  { label: "Done", value: "Done", color: "#04bb6f" },
 ];
 
 export const progressOptions = [
-  { label: "0%", value: "0" },
-  { label: "10%", value: "10" },
-  { label: "15%", value: "15" },
-  { label: "25%", value: "25" },
-  { label: "35%", value: "35" },
-  { label: "45%", value: "45" },
-  { label: "50%", value: "50" },
-  { label: "65%", value: "65" },
-  { label: "75%", value: "75" },
-  { label: "85%", value: "85" },
-  { label: "95%", value: "95" },
-  { label: "100%", value: "100" },
+  { label: "0%", value: 0 },
+  { label: "10%", value: 10 },
+  { label: "15%", value: 15 },
+  { label: "25%", value: 25 },
+  { label: "35%", value: 35 },
+  { label: "45%", value: 45 },
+  { label: "50%", value: 50 },
+  { label: "65%", value: 65 },
+  { label: "75%", value: 75 },
+  { label: "85%", value: 85 },
+  { label: "95%", value: 95 },
+  { label: "100%", value: 100 },
 ];
 
 export const priorityOptions = [
-  { label: "LOW", value: "low", color: "#ABA5EC" },
-  { label: "NORMAL P1", value: "normal p1", color: "#5093D2" },
-  { label: "NORMAL P2", value: "normal p2", color: "#5093D2" },
-  { label: "HIGH P1", value: "high p1", color: "#F0963C" },
-  { label: "HIGH P2", value: "high p2", color: "#F0963C" },
+  { label: "LOW", value: "low", color: "#7c70fc" },
+  { label: "NORMAL P1", value: "normal p1", color: "#337eef" },
+  { label: "NORMAL P2", value: "normal p2", color: "#337eef" },
+  { label: "HIGH P1", value: "high p1", color: "#f0633c" },
+  { label: "HIGH P2", value: "high p2", color: "#f0633c" },
 ];
 
 export const estimationOptions = [

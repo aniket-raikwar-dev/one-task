@@ -5,7 +5,12 @@ const taskStore = create(
   persist(
     (set) => ({
       taskDetails: {},
+      teamOptionsStore: [],
+      dependenciesOptionsStore: [],
       setTaskDetails: (payload) => set({ taskDetails: payload }),
+      setTeamOptionsStore: (payload) => set({ teamOptionsStore: payload }),
+      setDependenciesOptionsStore: (payload) =>
+        set({ dependenciesOptionsStore: payload }),
     }),
     {
       name: "task-storage",

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema(
   {
-    description: {
+    text: {
       type: String,
       required: [true, "comment text is required"],
     },
