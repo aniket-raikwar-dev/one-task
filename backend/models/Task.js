@@ -40,6 +40,10 @@ const taskSchema = new mongoose.Schema(
       type: String,
     },
 
+    startDate: {
+      type: Date,
+    },
+
     dueDate: {
       type: Date,
     },

@@ -96,6 +96,27 @@ const getUserProfileCtrl = async (req, res, next) => {
   }
 };
 
+// GET -> SINGLE USER MEMEBER DATA
+const getUserMemberDataCtrl = async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findById(userId).populate({
+      path: "projects",
+      populate: {
+        path: "manager",
+        model: "User",
+      },
+    });
+    res.json({
+      status: 200,
+      message: "User profile data retrieved",
+      data: user,
+    });
+  } catch (error) {
+    next(new Error(error));
+  }
+};
+
 // PUT -> UPDATE USER PROFILE DATA
 const updateUserProfileCtrl = async (req, res, next) => {
   const { firstName, lastName, techRole, location, phone } = req.body;
@@ -151,4 +172,5 @@ module.exports = {
   getUserProfileCtrl,
   updateUserProfileCtrl,
   updateSelectedProjectCtrl,
+  getUserMemberDataCtrl,
 };

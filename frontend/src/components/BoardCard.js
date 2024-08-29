@@ -15,7 +15,11 @@ const BoardCard = ({ task, showDrawer }) => {
     >
       <div className="board-card-top">
         <div className="flex justify-between">
-          <div className="date">{formatDate(task?.createdAt)}</div>
+          <div className="date">
+            {task?.startDate
+              ? formatDate(task?.startDate)
+              : formatDate(task?.createdAt)}
+          </div>
           <div className={`priority ${task?.priority}`}>{task?.priority}</div>
         </div>
 

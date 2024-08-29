@@ -1,25 +1,42 @@
 import React from "react";
-import Male1 from "../images/male1.png";
+import { formatDate } from "../utils/formatDate";
 
-const OverviewCard = () => {
+const OverviewCard = ({ task }) => {
   return (
-    <div className="board-card ovr-card">
-      <div className="ovr-card-top">
+    <div key={task?._id} className="ovr-board-card">
+      <div style={{ height: "110px" }} >
         <div className="flex justify-between">
-          <div className="date">12.01.2024</div>
-          <div className="tech">High</div>
+          <div className="date">
+            {" "}
+            {task?.startDate
+              ? formatDate(task?.startDate)
+              : formatDate(task?.createdAt)}
+          </div>
+          <div className={`priority ${task?.priority}`}>{task?.priority}</div>
         </div>
 
-        <h3 className="task-text">
-          FE: Replacement of Node JS with Java and Go Language
-        </h3>
+        {task?.title ? (
+          <h3 className="task-text">
+            {task?.title.length > 80
+              ? `${task?.title.slice(0, 80)}...`
+              : task?.title}
+          </h3>
+        ) : (
+          <h3 className="task-text">No Title</h3>
+        )}
 
-        <div className="flex justify-between items-center mt-2">
-          <div className="tech-box">
-            <div className="circle"></div>
-            Frontend Stack
+        <div className="flex justify-between items-center mt-1">
+          <div className="guild-box">
+            {task?.guild ? (
+              <>
+                <div className="circle"></div>
+                {task?.guild}
+              </>
+            ) : (
+              "-"
+            )}
           </div>
-          <div className="project-owner mar-t-6 mb-1">
+          <div className="project-owner mb-1">
             <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -31,19 +48,28 @@ const OverviewCard = () => {
             </div>
 
             <p>
-              Estimation: <span>3 SP</span>
+              Estimation:{" "}
+              <span>
+                {task?.estimation ? task?.estimation : "Not Assigned"}
+              </span>
             </p>
           </div>
         </div>
       </div>
 
       <div className="ovr-card-bottom">
-        <div className="table-assigned">
-          <div className="profile">
-            <img src={Male1} alt="" />
+        {task?.assignee ? (
+          <div className="table-assigned">
+            <div className="profile">
+              <img src={task?.assignee?.profilePhoto} alt="" />
+            </div>
+            <div className="fz-12">{task?.assignee?.fullName}</div>
           </div>
-          <div className="fz-12">Brad Johnson</div>
-        </div>
+        ) : (
+          <div className="table-assigned">
+            <div className="fz-12">No Assignee</div>
+          </div>
+        )}
         <div className="flex">
           <div className="short-cut">
             <svg
@@ -63,36 +89,11 @@ const OverviewCard = () => {
             >
               <path d="M7.29117 20.8242L2 22L3.17581 16.7088C2.42544 15.3056 2 13.7025 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C10.2975 22 8.6944 21.5746 7.29117 20.8242ZM7.58075 18.711L8.23428 19.0605C9.38248 19.6745 10.6655 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 13.3345 4.32549 14.6175 4.93949 15.7657L5.28896 16.4192L4.63416 19.3658L7.58075 18.711Z"></path>
             </svg>
-            <p>4</p>
+            <p>{task?.comments.length}</p>
           </div>
         </div>
       </div>
     </div>
-    // <div className="ovr-card">
-    //   <div className="ovr-top">
-    //     <div className="ovr-top-1">13.01.2022</div>
-    //     <div className="ovr-top-2"></div>
-    //   </div>
-    //   <div className="ovr-card-content">
-    //     <p className="heading">
-    //       Fixed: UI issue of the dashboard scrolling on effect cause an error.
-    //     </p>
-    //     <div className="flex justify-between">
-    //       <div className="ovr-sprint">
-    //         <div className="circle"></div>
-    //         Sprint: MXY-245
-    //       </div>
-    //       <div className="ovr-sprint est">
-    //         <div className="circle"></div>
-    //         Esitimation: 3 SP
-    //       </div>
-    //     </div>
-
-    //     <div className="ovr-assigned">
-    //       Assigned: <span>John Brown</span>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 

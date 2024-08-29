@@ -85,7 +85,7 @@ const CalendarPage = ({ collapsed }) => {
     const formattedEvent = events.map((event, index) => ({
       id: `w-${event?._id}`,
       title: event?.title,
-      start: event?.createdAt,
+      start: event?.startDate,
       end: event?.dueDate ? event?.dueDate : event?.updatedAt,
       allDay: true,
       className: customClasses[index % customClasses.length],

@@ -12,6 +12,7 @@ const createTaskCtrl = async (req, res, next) => {
     assignee,
     priority,
     estimation,
+    startDate,
     dueDate,
     progress,
     dependencies,
@@ -39,6 +40,7 @@ const createTaskCtrl = async (req, res, next) => {
       taskData.progress = progress;
     } else taskData.progress = 0;
     if (dependencies) taskData.dependencies = dependencies;
+    if (startDate) taskData.startDate = startDate;
     if (dueDate) taskData.dueDate = dueDate;
     if (guild) taskData.guild = guild;
 

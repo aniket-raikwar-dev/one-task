@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Task = require("./Task");
 
 const userSchema = new mongoose.Schema(
   {
@@ -51,6 +52,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
     },
 
+    tasks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+      },
+    ],
+
     role: {
       type: String,
       enum: ["manager", "developer"],
@@ -67,9 +75,9 @@ const userSchema = new mongoose.Schema(
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment"
-      }
-    ]
+        ref: "Comment",
+      },
+    ],
   },
   { timestamps: true, toJSON: { virtuals: true } }
 );

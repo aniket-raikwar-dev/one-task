@@ -15,6 +15,7 @@ import OnBoarding from "./OnBoarding";
 import TaskDetails from "./TaskDetails";
 import SuccessPage from "./SuccessPage";
 import ProjectDetails from "./ProjectDetails";
+import TeamMemberDetails from "./TeamMemberDetails";
 
 const LayoutPage = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -41,6 +42,10 @@ const LayoutPage = () => {
             <Route path="/task-details/:id" element={<TaskDetails />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/project-details/:id" element={<ProjectDetails />} />
+            <Route
+              path="/team-member/:id"
+              element={<TeamMemberDetails />}
+            />
           </Routes>
         </div>
       </Layout>

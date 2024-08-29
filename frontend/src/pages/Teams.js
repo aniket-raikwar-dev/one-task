@@ -3,6 +3,7 @@ import { Table } from "antd";
 import Female2 from "../images/female2.png";
 import SearchBar from "../components/SearchBar";
 import api from "../services/api";
+import { Link } from "react-router-dom";
 
 const columns = [
   {
@@ -24,17 +25,12 @@ const columns = [
     key: "techRole",
   },
   {
-    title: "Project",
-    dataIndex: "project",
+    title: "Projects",
+    dataIndex: "projects",
     key: "project",
-    render: (text) => <a href="#">{text || "Not Assigned"}</a>,
-  },
-
-  {
-    title: "Manager",
-    dataIndex: "manager",
-    key: "manager",
-    render: (text) => text || "-",
+    render: (text) => (
+      <div className="proj-assigned-box">Assigned: {text || 0}</div>
+    ),
   },
   {
     title: "Phone",
@@ -46,25 +42,45 @@ const columns = [
     dataIndex: "location",
     key: "location",
   },
+  {
+    title: "Details",
+    dataIndex: "view",
+    key: "view",
+    render: (text, record) => (
+      <Link
+        to={`/team-member/${record?.id}`}
+        className="btn-create justify-between"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M13.1717 12.0007L8.22192 7.05093L9.63614 5.63672L16.0001 12.0007L9.63614 18.3646L8.22192 16.9504L13.1717 12.0007Z"></path>
+        </svg>
+        <p>View</p>
+      </Link>
+    ),
+  },
 ];
 
 const Teams = () => {
   const [teamsData, setTeamsData] = useState([]);
 
-  const getProjectTeamsData = async () => {
+  const getAllTeamMembersData = async () => {
     try {
       const resp = await api.get("/users/all");
-      console.log("all user resp: ", resp);
+      console.log("all user resp: ", resp?.data?.data);
       const { data } = resp?.data;
       const formattedData = data.map((item, index) => ({
         key: index,
         profilePhoto: item.profilePhoto,
         name: item.fullName,
         techRole: item.techRole,
-        project: item.project,
-        manager: item.manager,
+        projects: item.projects.length,
         phone: item.phone,
         location: item.location,
+        id: item._id,
       }));
       setTeamsData(formattedData);
     } catch (error) {
@@ -73,32 +89,9 @@ const Teams = () => {
   };
 
   useEffect(() => {
-    getProjectTeamsData();
+    getAllTeamMembersData();
   }, []);
 
-  const data = [
-    {
-      key: "1",
-      name: "John Brown",
-      priority: "High",
-      task: "New York No. 1 Lake Park",
-      status: "Done",
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      priority: "Low",
-      task: "London No. 1 Lake Park",
-      status: "Discussion",
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      priority: "Normal",
-      task: "Sidney No. 1 Lake Park",
-      status: "Paused",
-    },
-  ];
   return (
     <div>
       <div className="flex justify-between items-center border-b pb-3">

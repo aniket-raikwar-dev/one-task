@@ -58,7 +58,7 @@ const Project = () => {
   return (
     <div>
       <div className="flex justify-between items-center border-b pb-3">
-        <h2 className="page-title">Project Boards</h2>
+        <h2 className="page-title">Projects</h2>
         {userDetails?.isManager && (
           <Link to="/create-new-project">
             <div className="btn-create">

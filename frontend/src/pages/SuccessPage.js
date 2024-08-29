@@ -5,6 +5,7 @@ import projectStore from "../stores/projectStore";
 
 const SuccessPage = () => {
   const { projectDetails } = projectStore();
+  console.log("Success: ", projectDetails);
 
   return (
     <div className="flex w-full flex-col items-center mt-24">
@@ -16,8 +17,8 @@ const SuccessPage = () => {
         </span>{" "}
         is Successfully Created.
       </p>
-      <Link to="/projects">
-        <div className="btn-create">View Projects</div>
+      <Link to={`/project-details/${projectDetails?._id}`}>
+        <div className="btn-create">View Project</div>
       </Link>
     </div>
   );

@@ -1,9 +1,10 @@
 import { DatePicker, Select, Space } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import taskStore from "../stores/taskStore";
 import { Field, Formik, Form } from "formik";
 import CustomTeamSelect from "../components/CustomTeamSelect";
 import { Progress } from "antd";
+import dayjs from "dayjs";
 import {
   estimationOptions,
   guildOptions,
@@ -11,7 +12,6 @@ import {
   progressOptions,
   statusOptions,
 } from "../utils/taskOptionsData";
-import moment from "moment";
 import CustomPrioritySelect from "../components/CustomPrioritySelect";
 import { useParams, useNavigate } from "react-router-dom";
 import AddLinkModal from "../components/AddLinkModal";
@@ -19,10 +19,13 @@ import api from "../services/api";
 import userStore from "../stores/userStore";
 import AttachmentModal from "../components/AttachmentModal";
 import { getToken } from "../utils/getToken";
+import { debounce } from "lodash";
 import TaskLinkPreview from "../components/TaskLinkPreview";
 import TaskAttachmentPreview from "../components/TaskAttachmentPreview";
 import Loader from "../components/Loader";
 import TaskCommentPreview from "../components/TaskCommentPreview";
+import moment from "moment";
+import { ProgressBar } from "react-loader-spinner";
 
 const TaskDetails = () => {
   const [taskData, setTaskData] = useState({});
@@ -35,7 +38,8 @@ const TaskDetails = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [loader, setLoader] = useState(false);
   const [deleteLoader, setDeleteLoader] = useState(false);
-  const [selectedStatusColor, setSelectedStatusColor] = useState("#3030fb"); // Default color
+  const [selectedStatusColor, setSelectedStatusColor] = useState("#3030fb");
+  const [progressBar, setProgressBar] = useState(0);
   const { teamOptionsStore, dependenciesOptionsStore, taskDetails } =
     taskStore();
 
@@ -59,23 +63,32 @@ const TaskDetails = () => {
     setIsAttachModalOpen(false);
   };
 
-  const handleSelectStatus = async (value) => {
+  const debouncedUpdate = useCallback(
+    debounce(async (newValues) => {
+      console.log("Updating values:", newValues);
+      const body = {
+        ...newValues,
+        startDate: moment(newValues.startDate["$d"]).format("YYYY-MM-DD"),
+        dueDate: moment(newValues.dueDate["$d"]).format("YYYY-MM-DD"),
+      };
+      await api.put(`/task/update/${taskDetails?._id}`, body);
+    }, 2000),
+    []
+  );
+
+  const handleChangeTaskStatus = async (value) => {
     const selectedOption = statusOptions?.find(
       (option) => option?.value === value
     );
     setSelectedStatusColor(selectedOption?.color);
-
     setTaskData((prevState) => ({
       ...prevState,
       status: value,
     }));
-
-    console.log("value: ", value);
-
-    const resp = await api.put(`/task/update/status/${taskData?._id}`, {
+    await api.put(`/task/update/status/${taskData?._id}`, {
       status: value,
     });
-    console.log("status respp: ", resp);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   const getTaskDetailsData = async () => {
@@ -84,6 +97,7 @@ const TaskDetails = () => {
       const resp = await api.get(`/task/details/${id}`);
       const { data } = resp?.data;
       setTaskData(data);
+      setProgressBar(data?.progress);
     } catch (error) {
       console.log(error);
     } finally {
@@ -227,10 +241,6 @@ const TaskDetails = () => {
     }
   };
 
-  const handleDueDate = (value, setFieldValue) => {
-    setFieldValue("dueDate", moment(new Date(value)).format("YYYY-MM-DD"));
-  };
-
   if (loader) {
     <Loader title="Task Details" />;
   }
@@ -247,7 +257,7 @@ const TaskDetails = () => {
             options={statusOptions}
             style={{ backgroundColor: selectedStatusColor }}
             optionRender={(option) => <Space>{option.data.label}</Space>}
-            onChange={handleSelectStatus}
+            onChange={handleChangeTaskStatus}
             value={taskData?.status}
           />
 
@@ -283,227 +293,252 @@ const TaskDetails = () => {
             status: taskData?.status || "",
             estimation: taskData?.estimation || "",
             priority: taskData?.priority || "",
-            startDate: null,
-            dueDate: null,
+            startDate: dayjs(taskData?.startDate) || null,
+            dueDate: dayjs(taskData?.dueDate) || null,
             reportee: taskDetails?.reportee?._id || "",
             progress: taskData?.progress || 0,
             dependencies: taskData?.dependencies || [],
             guild: taskData?.guild || "",
             description: taskData?.description || "",
           }}
-          // onSubmit={}
         >
-          {({ isSubmitting, setFieldValue, values }) => (
-            <Form className="scrollable-container flex justify-between mt-4">
-              <div className="w-[60%]">
-                <Field
-                  as="textarea"
-                  name="title"
-                  rows={3}
-                  className="task-title-bg-input autosize"
-                  placeholder="Task title here..."
-                  autoComplete="off"
-                  autoFocus
-                />
-
-                <Progress
-                  percent={taskData?.progress}
-                  strokeColor="#4040ff"
-                  strokeLinecap="square"
-                />
-
-                <div className="mt-5">
-                  <p className="font-semibold text-[15px]">Description :</p>
+          {({ submitForm, setFieldValue, values }) => {
+            return (
+              <Form className="scrollable-container flex justify-between mt-4">
+                <div className="w-[60%]">
                   <Field
                     as="textarea"
-                    name="description"
-                    rows={5}
-                    className="task-desc-input bg-transparent border-none"
-                    placeholder="Add a description here..."
+                    name="title"
+                    rows={3}
+                    className="task-title-bg-input autosize"
+                    placeholder="Task title here..."
                     autoComplete="off"
+                    autoFocus
+                    onChange={(e) => {
+                      setFieldValue("title", e.target.value);
+                      debouncedUpdate(values);
+                    }}
+                  />
+
+                  <Progress
+                    percent={progressBar}
+                    strokeColor="#4040ff"
+                    strokeLinecap="square"
+                  />
+
+                  <div className="mt-5">
+                    <p className="font-semibold text-[15px]">Description :</p>
+                    <Field
+                      as="textarea"
+                      name="description"
+                      rows={5}
+                      className="task-desc-input bg-transparent border-none"
+                      placeholder="Add a description here..."
+                      autoComplete="off"
+                      onChange={(e) => {
+                        setFieldValue("description", e.target.value);
+                        debouncedUpdate(values);
+                      }}
+                    />
+                  </div>
+
+                  <div className="border-div"></div>
+
+                  <TaskAttachmentPreview
+                    taskData={taskData}
+                    openAttachModal={openAttachModal}
+                    handleDeleteAttachment={handleDeleteAttachment}
+                  />
+
+                  <div className="border-div"></div>
+
+                  <TaskLinkPreview
+                    taskData={taskData}
+                    openLinkModal={openLinkModal}
+                    handleDeleteLink={handleDeleteLink}
+                  />
+
+                  <div className="border-div"></div>
+
+                  <TaskCommentPreview
+                    taskData={taskData}
+                    userDetails={userDetails}
+                    commentText={commentText}
+                    addCommentOnTask={addCommentOnTask}
+                    setCommentText={setCommentText}
+                    handleDeleteComment={handleDeleteComment}
+                    handleUpdateComment={handleUpdateComment}
                   />
                 </div>
 
-                <div className="border-div"></div>
-
-                <TaskAttachmentPreview
-                  taskData={taskData}
-                  openAttachModal={openAttachModal}
-                  handleDeleteAttachment={handleDeleteAttachment}
-                />
-
-                <div className="border-div"></div>
-
-                <TaskLinkPreview
-                  taskData={taskData}
-                  openLinkModal={openLinkModal}
-                  handleDeleteLink={handleDeleteLink}
-                />
-
-                <div className="border-div"></div>
-
-                <TaskCommentPreview
-                  taskData={taskData}
-                  userDetails={userDetails}
-                  commentText={commentText}
-                  addCommentOnTask={addCommentOnTask}
-                  setCommentText={setCommentText}
-                  handleDeleteComment={handleDeleteComment}
-                  handleUpdateComment={handleUpdateComment}
-                />
-              </div>
-
-              <div className="task-detail-box">
-                <div className="head">
-                  Details
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 7H13V9H11V7ZM11 11H13V17H11V11Z"></path>
-                  </svg>
-                </div>
-                <div className="body">
-                  <div className="task-row">
-                    <p>Assignee :</p>
-                    <CustomTeamSelect
-                      name="assignee"
-                      mode="single"
-                      placeholder="-"
-                      className="task-input"
-                      options={teamOptionsStore}
-                      onChange={(value) => {
-                        setFieldValue("assignee", value);
-                      }}
-                      value={values.assignee}
-                    />
+                <div className="task-detail-box">
+                  <div className="head">
+                    Details
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 7H13V9H11V7ZM11 11H13V17H11V11Z"></path>
+                    </svg>
                   </div>
+                  <div className="body">
+                    <div className="task-row">
+                      <p>Assignee :</p>
+                      <CustomTeamSelect
+                        name="assignee"
+                        mode="single"
+                        placeholder="-"
+                        className="task-input"
+                        options={teamOptionsStore}
+                        value={values.assignee}
+                        onChange={(value) => {
+                          setFieldValue("assignee", value);
+                          debouncedUpdate({ ...values, assignee: value });
+                        }}
+                      />
+                    </div>
 
-                  <div className="task-row">
-                    <p>Estimated (SP) :</p>
-                    <Select
-                      mode="single"
-                      name="estimation"
-                      className="task-input"
-                      placeholder="-"
-                      options={estimationOptions}
-                      optionRender={(option) => (
-                        <Space>{option.data.label}</Space>
-                      )}
-                      onChange={(value) => {
-                        setFieldValue("estimation", value);
-                      }}
-                      value={values.estimation}
-                    />
-                  </div>
+                    <div className="task-row">
+                      <p>Estimated (SP) :</p>
+                      <Select
+                        mode="single"
+                        name="estimation"
+                        className="task-input"
+                        placeholder="-"
+                        options={estimationOptions}
+                        value={values.estimation}
+                        optionRender={(option) => (
+                          <Space>{option.data.label}</Space>
+                        )}
+                        onChange={(value) => {
+                          setFieldValue("estimation", value);
+                          debouncedUpdate({ ...values, estimation: value });
+                        }}
+                      />
+                    </div>
 
-                  <div className="task-row">
-                    <p>Priority :</p>
-                    <CustomPrioritySelect
-                      name="priority"
-                      placeholder="-"
-                      className="task-input"
-                      options={priorityOptions}
-                      onChange={(value) => {
-                        setFieldValue("priority", value);
-                      }}
-                      value={values.priority}
-                    />
-                  </div>
+                    <div className="task-row">
+                      <p>Priority :</p>
+                      <CustomPrioritySelect
+                        name="priority"
+                        placeholder="-"
+                        className="task-input"
+                        options={priorityOptions}
+                        value={values.priority}
+                        onChange={(value) => {
+                          setFieldValue("priority", value);
+                          debouncedUpdate({ ...values, priority: value });
+                        }}
+                      />
+                    </div>
 
-                  <div className="task-row">
-                    <p>Start Date :</p>
-                    <DatePicker
-                      name="startDate"
-                      className="task-input"
-                      placeholder="-"
-                      onChange={(value) => handleDueDate(value, setFieldValue)}
-                    />
-                  </div>
+                    <div className="task-row">
+                      <p>Start Date :</p>
+                      <DatePicker
+                        name="startDate"
+                        className="task-input"
+                        placeholder="-"
+                        value={values.startDate}
+                        onChange={(date) => {
+                          setFieldValue("startDate", date);
+                          debouncedUpdate({ ...values, startDate: date });
+                        }}
+                      />
+                    </div>
 
-                  <div className="task-row">
-                    <p>Due Date :</p>
-                    <DatePicker
-                      name="dueDate"
-                      className="task-input"
-                      placeholder="-"
-                      onChange={(value) => handleDueDate(value, setFieldValue)}
-                    />
-                  </div>
+                    <div className="task-row">
+                      <p>Due Date :</p>
+                      <DatePicker
+                        name="dueDate"
+                        className="task-input"
+                        placeholder="-"
+                        value={values.dueDate}
+                        onChange={(date) => {
+                          setFieldValue("dueDate", date);
+                          debouncedUpdate({ ...values, dueDate: date });
+                        }}
+                      />
+                    </div>
 
-                  <div className="task-row">
-                    <p>Reportee :</p>
-                    <CustomTeamSelect
-                      name="reportee"
-                      mode="single"
-                      placeholder="-"
-                      className="task-input"
-                      options={teamOptionsStore}
-                      onChange={(value) => {
-                        setFieldValue("reportee", value);
-                      }}
-                      value={values.reportee}
-                    />
-                  </div>
+                    <div className="task-row">
+                      <p>Reportee :</p>
+                      <CustomTeamSelect
+                        name="reportee"
+                        mode="single"
+                        placeholder="-"
+                        className="task-input"
+                        options={teamOptionsStore}
+                        value={values.reportee}
+                        onChange={(value) => {
+                          setFieldValue("reportee", value);
+                          debouncedUpdate({ ...values, reportee: value });
+                        }}
+                      />
+                    </div>
 
-                  <div className="task-row">
-                    <p>Progress :</p>
-                    <Select
-                      mode="single"
-                      name="progress"
-                      className="task-input"
-                      placeholder="-"
-                      options={progressOptions}
-                      optionRender={(option) => (
-                        <Space>{option.data.label}</Space>
-                      )}
-                      onChange={(value) => {
-                        setFieldValue("progress", value);
-                      }}
-                      value={values.progress}
-                    />
-                  </div>
+                    <div className="task-row">
+                      <p>Progress :</p>
+                      <Select
+                        mode="single"
+                        name="progress"
+                        className="task-input"
+                        placeholder="-"
+                        options={progressOptions}
+                        value={values.progress}
+                        optionRender={(option) => (
+                          <Space>{option.data.label}</Space>
+                        )}
+                        onChange={(value) => {
+                          setFieldValue("progress", value);
+                          setProgressBar(value);
+                          debouncedUpdate({ ...values, progress: value });
+                        }}
+                      />
+                    </div>
 
-                  <div className="task-row">
-                    <p>Guild :</p>
-                    <Select
-                      name="guild"
-                      mode="single"
-                      className="task-input"
-                      placeholder="-"
-                      options={guildOptions}
-                      optionRender={(option) => (
-                        <Space>{option.data.label}</Space>
-                      )}
-                      onChange={(value) => {
-                        setFieldValue("guild", value);
-                      }}
-                      value={values.guild}
-                    />
-                  </div>
+                    <div className="task-row">
+                      <p>Guild :</p>
+                      <Select
+                        name="guild"
+                        mode="single"
+                        className="task-input"
+                        placeholder="-"
+                        options={guildOptions}
+                        value={values.guild}
+                        optionRender={(option) => (
+                          <Space>{option.data.label}</Space>
+                        )}
+                        onChange={(value) => {
+                          setFieldValue("guild", value);
+                          debouncedUpdate({ ...values, guild: value });
+                        }}
+                      />
+                    </div>
 
-                  <div className="task-row">
-                    <p>Dependencies :</p>
-                    <Select
-                      mode="multiple"
-                      name="dependencies"
-                      className="task-input"
-                      placeholder="-"
-                      options={dependenciesOptionsStore}
-                      optionRender={(option) => (
-                        <Space>{option.data.label}</Space>
-                      )}
-                      onChange={(value) => {
-                        setFieldValue("dependencies", value);
-                      }}
-                      value={values.dependencies}
-                    />
+                    <div className="task-row">
+                      <p>Dependencies :</p>
+                      <Select
+                        mode="multiple"
+                        name="dependencies"
+                        className="task-input"
+                        placeholder="-"
+                        options={dependenciesOptionsStore}
+                        value={values.dependencies}
+                        optionRender={(option) => (
+                          <Space>{option.data.label}</Space>
+                        )}
+                        onChange={(value) => {
+                          setFieldValue("dependencies", value);
+                          debouncedUpdate({ ...values, dependencies: value });
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Form>
-          )}
+              </Form>
+            );
+          }}
         </Formik>
       </div>
 

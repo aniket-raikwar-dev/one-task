@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BoardCard from "../components/BoardCard";
 import SearchBar from "../components/SearchBar";
 import NewTaskDrawer from "../components/NewTaskDrawer";
@@ -6,6 +6,7 @@ import api from "../services/api";
 import projectStore from "../stores/projectStore";
 import taskStore from "../stores/taskStore";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { debounce } from "lodash";
 
 const Boards = () => {
   const [open, setOpen] = useState(false);
@@ -31,7 +32,7 @@ const Boards = () => {
     setOpen(false);
   };
 
-  const getTasksDataByProject = async () => {
+  const getTasksBySelectedProject = async () => {
     try {
       const resp = await api.get(`/task/${selectedProjectId}`);
       const { data } = resp?.data;
@@ -107,33 +108,27 @@ const Boards = () => {
       reorderedItem
     );
 
-    // Update the state
     setColumns({ ...columns });
-
-
-    // Here you would typically make an API call to update the task's status on the backend
-    // updateTaskStatus(reorderedItem.id, destination.droppableId);
+    debouncedUpdate();
   };
 
-  const updateTaskStatusUsingButton = async () => {
-    const resp = await api.put(
-      `/task/update/bulk/status/${selectedProjectId}`,
-      { columns }
-    );
-    console.log("Reponse: ", resp);
+  const debouncedUpdate = debounce(async () => {
     try {
+      await api.put(`/task/update/bulk/status/${selectedProjectId}`, {
+        columns,
+      });
     } catch (error) {
       console.log(error);
     }
-  };
+  }, 2000);
 
   useEffect(() => {
-    getTasksDataByProject();
+    getTasksBySelectedProject();
     getSelectedProjectTeamsData();
   }, []);
 
   const handleTaskUpdate = () => {
-    getTasksDataByProject();
+    getTasksBySelectedProject();
   };
 
   return (
@@ -144,8 +139,8 @@ const Boards = () => {
           <SearchBar />
           <div
             className="btn-create ml-3"
-            // onClick={() => showDrawer(true)}
-            onClick={updateTaskStatusUsingButton}
+            onClick={() => showDrawer(true)}
+            // onClick={updateTaskStatusUsingButton}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

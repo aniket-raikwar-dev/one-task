@@ -146,7 +146,7 @@ const TimelineView = ({ timelineView, isSmallView }) => {
   }, [timelineView]);
 
   return (
-    <div id="app-gantt">
+    <div className="border" id="app-gantt">
       <svg id="gantt"></svg>
     </div>
   );

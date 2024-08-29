@@ -1,9 +1,9 @@
 import React from "react";
 import { Select } from "antd";
 
-const CustomTeamSelect = ({ value, onChange, options, ...props }) => {
+const CustomAssigneeSelect = ({ value, onChange, options, ...props }) => {
   const tagRender = (props) => {
-    const { label, value, onClose } = props;
+    const { label, value } = props;
     const option = options?.find((opt) => opt?.value === value);
     return (
       <div className="flex py-1 items-center">
@@ -12,10 +12,7 @@ const CustomTeamSelect = ({ value, onChange, options, ...props }) => {
           src={option?.profile}
           alt=""
         />
-        <span>{label}</span>
-        <span onClick={onClose} style={{ marginLeft: 8, cursor: "pointer" }}>
-          x
-        </span>
+        {label}
       </div>
     );
   };
@@ -38,4 +35,4 @@ const CustomTeamSelect = ({ value, onChange, options, ...props }) => {
   );
 };
 
-export default CustomTeamSelect;
+export default CustomAssigneeSelect;

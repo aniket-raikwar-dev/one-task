@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DatePicker, Drawer, Select, Space } from "antd";
 import { Link } from "react-router-dom";
 import Loader from "../images/loader.gif";
+import dayjs from "dayjs";
 import {
   statusOptions,
   priorityOptions,
@@ -15,6 +16,7 @@ import CustomTeamSelect from "./CustomTeamSelect";
 import { Field, Formik, Form } from "formik";
 import api from "../services/api";
 import taskStore from "../stores/taskStore";
+import CustomAssigneeSelect from "./CustomAssigneeSelect";
 
 const NewTaskDrawer = ({
   open,
@@ -52,9 +54,7 @@ const NewTaskDrawer = ({
     autosize();
   }, []);
 
-  const handleDueDate = (value, setFieldValue) => {
-    setFieldValue("dueDate", moment(new Date(value)).format("YYYY-MM-DD"));
-  };
+  // console.log("task detail: ", taskDetails);
 
   const deleteTask = async () => {
     setDeleteLoader(true);
@@ -74,6 +74,8 @@ const NewTaskDrawer = ({
     setLoader(true);
     const body = {
       ...values,
+      startDate: moment(values.startDate["$d"]).format("YYYY-MM-DD"),
+      dueDate: moment(values.dueDate["$d"]).format("YYYY-MM-DD"),
       managerId,
       projectId,
     };
@@ -81,10 +83,8 @@ const NewTaskDrawer = ({
       console.log("bodies: ", body);
       if (isNewTask) {
         const resp = await api.post("/task/create", body);
-        console.log("new task: ", resp);
       } else {
         const resp = await api.put(`/task/update/${taskDetails?._id}`, body);
-        console.log("update task: ", resp);
       }
       onTaskUpdate();
       onClose();
@@ -155,7 +155,8 @@ const NewTaskDrawer = ({
           assignee: isNewTask ? undefined : taskDetails?.assignee?._id || "",
           status: isNewTask ? undefined : taskDetails?.status || "",
           estimation: isNewTask ? undefined : taskDetails?.estimation || "",
-          dueDate: null,
+          startDate: isNewTask ? null : dayjs(taskDetails?.startDate),
+          dueDate: isNewTask ? null : dayjs(taskDetails?.dueDate),
           priority: isNewTask ? undefined : taskDetails?.priority || "",
           progress: isNewTask ? 0 : taskDetails?.progress || 0,
           dependencies: isNewTask ? [] : taskDetails?.dependencies || [],
@@ -165,8 +166,8 @@ const NewTaskDrawer = ({
         onSubmit={handleSubmit}
       >
         {({ isSubmitting, setFieldValue, values }) => (
-          <Form>
-            <div className="">
+          <Form className="flex flex-col justify-between h-full">
+            <div className="drawer-input-box">
               <Field
                 as="textarea"
                 name="title"
@@ -178,7 +179,7 @@ const NewTaskDrawer = ({
               />
               <div className="task-row mt-1">
                 <p>Assignee :</p>
-                <CustomTeamSelect
+                <CustomAssigneeSelect
                   name="assignee"
                   mode="single"
                   placeholder="-"
@@ -221,13 +222,25 @@ const NewTaskDrawer = ({
                   value={values.estimation}
                 />
               </div>
+
+              <div className="task-row">
+                <p>Start Date :</p>
+                <DatePicker
+                  name="startDate"
+                  className="task-input"
+                  placeholder="-"
+                  value={values.startDate}
+                  onChange={(date) => setFieldValue("startDate", date)}
+                />
+              </div>
               <div className="task-row">
                 <p>Due Date :</p>
                 <DatePicker
                   name="dueDate"
                   className="task-input"
                   placeholder="-"
-                  onChange={(value) => handleDueDate(value, setFieldValue)}
+                  value={values.dueDate}
+                  onChange={(date) => setFieldValue("dueDate", date)}
                 />
               </div>
 
@@ -304,7 +317,7 @@ const NewTaskDrawer = ({
                 />
               </div>
             </div>
-            <div className="mt-1">
+            <div>
               <button
                 type="submit"
                 className="btn-create save w-full"

@@ -5,6 +5,8 @@ import api from "../services/api";
 import userStore from "../stores/userStore";
 import projectStore from "../stores/projectStore";
 import moment from "moment";
+import dayjs from "dayjs";
+import { CloseOutlined } from "@ant-design/icons";
 import {
   budgetOptions,
   projectOptions,
@@ -41,7 +43,7 @@ const CreateNewProject = () => {
   const getProjectDetailsData = async () => {
     try {
       const resp = await api.get(`/project/details/${id}`);
-      console.log("project detail : ", resp);
+      // console.log("project detail : ", resp);
       const { data } = resp?.data;
       setProjectData(data);
     } catch (error) {
@@ -78,8 +80,6 @@ const CreateNewProject = () => {
     return formattedTeam;
   };
 
-  console.log("projectData: ", projectData);
-
   const handleTeamChange = (value, setFieldValue) => {
     setFieldValue("teamMembers", value);
   };
@@ -95,14 +95,6 @@ const CreateNewProject = () => {
     setFieldValue("budget", value);
   };
 
-  const handleStartDateChange = (value, setFieldValue) => {
-    setFieldValue("startDate", moment(new Date(value)).format("YYYY-MM-DD"));
-  };
-
-  const handleDeadlineChange = (value, setFieldValue) => {
-    setFieldValue("deadline", moment(new Date(value)).format("YYYY-MM-DD"));
-  };
-
   const handleSubmit = async (values) => {
     setLoader(true);
     try {
@@ -115,22 +107,23 @@ const CreateNewProject = () => {
         status: values.status,
         projectType: values.projectType,
         budget: values.budget,
-        startDate: values.startDate,
-        deadline: values.deadline,
+        startDate: moment(values.startDate["$d"]).format("YYYY-MM-DD"),
+        deadline: moment(values.deadline["$d"]).format("YYYY-MM-DD"),
       };
-      console.log("bodies: ", body);
+
       if (isEditMode) {
         const resp = await api.put(`/project/update/${id}`, body);
+        const { data } = resp?.data;
+        navigate(`/project-details/${data?._id}`);
       } else {
         const resp = await api.post("/project/create", body);
+        const { data } = resp?.data;
+        setProjectDetails(data);
+        setTimeout(() => {
+          setLoader(false);
+          navigate("/success");
+        }, 2000);
       }
-      // const resp = await api.post("/project/create", body);
-      // const { data } = resp?.data;
-      // setProjectDetails(data);
-      setTimeout(() => {
-        setLoader(false);
-        navigate("/success");
-      }, 2000);
     } catch (error) {
       console.log(error);
       setLoader(false);
@@ -173,13 +166,7 @@ const CreateNewProject = () => {
     return errors;
   };
 
-  
-
-  const safeMoment = (dateString) => {
-    if (!dateString) return null;
-    const date = moment(dateString);
-    return date.isValid() ? date : null;
-  };
+  console.log("team members: ", teamMembers);
 
   return (
     <div>
@@ -203,10 +190,10 @@ const CreateNewProject = () => {
             projectType: projectData?.projectType || undefined,
             budget: projectData?.budget || undefined,
             startDate: projectData?.startDate
-              ? safeMoment(projectData?.startDate)
+              ? dayjs(projectData?.startDate)
               : null,
             deadline: projectData?.deadline
-              ? moment(projectData.deadline)
+              ? dayjs(projectData?.deadline)
               : null,
           }}
           validate={validate}
@@ -246,6 +233,30 @@ const CreateNewProject = () => {
                     onChange={(value) => handleTeamChange(value, setFieldValue)}
                     options={teamMembers}
                     value={values.teamMembers}
+                    tagRender={(props) => {
+                      const { label, value, onClose } = props;
+                      const option = teamMembers?.find(
+                        (opt) => opt?.value === value
+                      );
+                      return (
+                        <div className="flex py-1 px-2 items-center mr-3 bg-[#eeeeee] rounded">
+                          <img
+                            className="w-6 h-6 rounded-full mr-2"
+                            src={option?.profile}
+                            alt=""
+                          />
+                          <span>{label}</span>
+                          <span
+                            onClick={onClose}
+                            style={{ marginLeft: 8, cursor: "pointer" }}
+                          >
+                            <CloseOutlined
+                              style={{ color: "#808080", fontSize: "12px" }}
+                            />
+                          </span>
+                        </div>
+                      );
+                    }}
                     optionRender={(option) => (
                       <div className="flex py-1">
                         <img
@@ -400,9 +411,8 @@ const CreateNewProject = () => {
                     id="start-date"
                     className="project-input"
                     placeholder="Select Project Start Date"
-                    onChange={(value) =>
-                      handleStartDateChange(value, setFieldValue)
-                    }
+                    value={values.startDate}
+                    onChange={(date) => setFieldValue("startDate", date)}
                   />
                   <ErrorMessage
                     name="startDate"
@@ -416,9 +426,8 @@ const CreateNewProject = () => {
                     id="deadline"
                     className="project-input"
                     placeholder="Select Project Deadline Date"
-                    onChange={(value) =>
-                      handleDeadlineChange(value, setFieldValue)
-                    }
+                    value={values.deadline}
+                    onChange={(date) => setFieldValue("deadline", date)}
                   />
                   <ErrorMessage
                     name="deadline"

@@ -6,6 +6,7 @@ const {
   getUserProfileCtrl,
   updateUserProfileCtrl,
   updateSelectedProjectCtrl,
+  getUserMemberDataCtrl,
 } = require("../controllers/userController");
 const isUserLogin = require("../middlewares/isUserLogin");
 const userRouter = express.Router();
@@ -27,6 +28,9 @@ userRouter.get("/all", getAllUsersCtrl);
 // GET: fetch user profile
 userRouter.get("/profile", isUserLogin, getUserProfileCtrl);
 
+// GET: fetch user member data
+userRouter.get("/member/:userId", isUserLogin, getUserMemberDataCtrl);
+
 // PUT: update user profile data
 userRouter.put(
   "/update",
@@ -36,6 +40,6 @@ userRouter.put(
 );
 
 // PUT: update selected project
-userRouter.put('/selected-project', isUserLogin, updateSelectedProjectCtrl)
+userRouter.put("/selected-project", isUserLogin, updateSelectedProjectCtrl);
 
 module.exports = userRouter;

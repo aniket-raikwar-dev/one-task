@@ -31,15 +31,19 @@ const createProjectCtrl = async (req, res, next) => {
       createdBy: req.userAuthID,
     });
 
-    await User.findByIdAndUpdate(req.userAuthID, {
-      $push: { projects: project._id },
-      $set: { selectedProject: project._id },
-    });
+    await Promise.all(
+      teamMembers.map(async (member) => {
+        await User.findByIdAndUpdate(member, {
+          $push: { projects: project._id },
+          $set: { selectedProject: project._id },
+        });
+      })
+    );
 
     res.status(200).json({
       message: "Task created and added to the project.",
       status: "success",
-      data: task,
+      data: project,
     });
   } catch (error) {
     next(new Error(error));
@@ -95,6 +99,7 @@ const getProjectDetailsCtrl = async (req, res) => {
   try {
     const project = await Project.findById(projectId)
       .populate("teamMembers")
+      .populate("tasks")
       .populate("manager");
     if (!project) {
       return res.status(404).json({ error: "Project not found" });
@@ -124,6 +129,11 @@ const updateProjectCtrl = async (req, res, next) => {
     deadline,
   } = req.body;
   try {
+    const existingProject = await Project.findById(projectId);
+    const existingTeamMembers = existingProject.teamMembers.map((id) =>
+      id.toString()
+    );
+
     const project = await Project.findByIdAndUpdate(
       projectId,
       {
@@ -141,6 +151,32 @@ const updateProjectCtrl = async (req, res, next) => {
       { new: true }
     );
 
+    const updatedTeamMembers = teamMembers.map((id) => id.toString());
+
+    const membersToAdd = teamMembers.filter(
+      (memberId) => !existingTeamMembers.includes(memberId)
+    );
+    const membersToRemove = existingTeamMembers.filter(
+      (memberId) => !updatedTeamMembers.includes(memberId)
+    );
+
+    await Promise.all(
+      membersToAdd.map(async (memberId) => {
+        await User.findByIdAndUpdate(memberId, {
+          $push: { projects: project._id },
+        });
+      })
+    );
+
+    await Promise.all(
+      membersToRemove.map(async (memberId) => {
+        await User.findByIdAndUpdate(memberId, {
+          $pull: { projects: project._id },
+          $set: { selectedProject: null },
+        });
+      })
+    );
+
     res.json({
       status: "200",
       message: "Project updated successfully",
@@ -156,18 +192,25 @@ const deleteProjectCtrl = async (req, res, next) => {
   const projectId = req.params.id;
   try {
     await Project.findByIdAndDelete(projectId);
-    const user = await User.findById(req.userAuthID);
-    if (user) {
-      if (user.selectedProject == projectId) {
-        user.selectedProject = null;
-      }
 
-      user.projects = user.projects.filter(
-        (projId) => !projId.equals(projectId)
-      );
+    const users = await User.find({ projects: projectId });
 
-      await user.save();
-    }
+    await Promise.all(
+      users.map(async (user) => {
+        if (
+          user.selectedProject &&
+          user.selectedProject.toString() === projectId
+        ) {
+          user.selectedProject = null;
+        }
+
+        user.projects = user.projects.filter(
+          (projId) => projId.toString() !== projectId
+        );
+
+        await user.save();
+      })
+    );
 
     res.status(200).json({
       message: "Project deleted.",

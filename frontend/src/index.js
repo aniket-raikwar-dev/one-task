@@ -18,6 +18,7 @@ import TaskDetails from "./pages/TaskDetails";
 import Project from "./pages/Project";
 import SuccessPage from "./pages/SuccessPage";
 import ProjectDetails from "./pages/ProjectDetails";
+import TeamMemberDetails from "./pages/TeamMemberDetails";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "project-details/:id",
         element: <ProjectDetails />,
+      },
+      {
+        path: "team-member/:id",
+        element: <TeamMemberDetails />,
       },
     ],
   },
