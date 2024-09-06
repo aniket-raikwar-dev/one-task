@@ -33,7 +33,7 @@ const columns = [
     ),
   },
   {
-    title: "Phone",
+    title: "Phone No.",
     dataIndex: "phone",
     key: "phone",
   },

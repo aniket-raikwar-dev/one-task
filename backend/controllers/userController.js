@@ -102,10 +102,16 @@ const getUserMemberDataCtrl = async (req, res, next) => {
   try {
     const user = await User.findById(userId).populate({
       path: "projects",
-      populate: {
-        path: "manager",
-        model: "User",
-      },
+      populate: [
+        {
+          path: "manager",
+          model: "User",
+        },
+        {
+          path: "tasks",
+          model: "Task", // Replace 'Task' with the correct model name if it's different
+        },
+      ],
     });
     res.json({
       status: 200,

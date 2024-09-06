@@ -6,46 +6,19 @@ import ProjectNotCreated from "../components/ProjectNotCreated";
 import ProjectNotSelected from "../components/ProjectNotSelected";
 import api from "../services/api";
 import { Table } from "antd";
-
-const columns = [
-  {
-    title: "Task",
-    dataIndex: "title",
-    key: "task",
-  },
-  {
-    title: "Assigned",
-    dataIndex: "name",
-    key: "name",
-    render: (text, record) => (
-      <div className="table-assigned">
-        <div className="profile">
-          <img src={record.profilePhoto} alt="" />
-        </div>
-        <div>{text}</div>
-      </div>
-    ),
-  },
-  {
-    title: "Priority",
-    dataIndex: "priority",
-    key: "priority",
-    render: (text) => <div className={`table-priority ${text}`}>{text}</div>,
-  },
-  {
-    title: "Estimation",
-    dataIndex: "estimation",
-    key: "estimation",
-  },
-];
+import { useNavigate } from "react-router-dom";
+import taskStore from "../stores/taskStore";
 
 const Overview = () => {
   const [timelineView, setTimelineView] = useState("Day");
+  const [allTasks, setAllTasks] = useState([]);
   const [toDoTasks, setToDoTasks] = useState([]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
 
   const { isProjectSelected, projectStoreList, selectedProjectId } =
     projectStore();
+  const { setTaskDetails } = taskStore();
+  const navigate = useNavigate();
 
   const toggleTimelineView = (viewType = "Day") => {
     setTimelineView(viewType);
@@ -55,6 +28,7 @@ const Overview = () => {
     try {
       const resp = await api.get(`/task/${selectedProjectId}`);
       const { data } = resp?.data;
+
       const todoTask = data?.filter((task) => task.status === "To Do");
       const inProgressTask = data?.filter(
         (task) => task.status === "In Progress"
@@ -70,6 +44,7 @@ const Overview = () => {
         name: item.assignee.fullName,
       }));
 
+      setAllTasks(data);
       setToDoTasks(todoTask);
       setInProgressTasks(formattedInProgressData);
     } catch (error) {
@@ -77,9 +52,55 @@ const Overview = () => {
     }
   };
 
+  const redirectToTaskDetail = (id) => {
+    const task = allTasks.find((task) => task?._id === id);
+    setTaskDetails(task);
+    navigate(`/task-details/${id}`);
+  };
+
   useEffect(() => {
     getTasksBySelectedProject();
   }, []);
+
+  const columns = [
+    {
+      title: "Task",
+      dataIndex: "title",
+      key: "task",
+      render: (text, render) => (
+        <div
+          className="cursor-pointer hover:text-[#3030fb]"
+          onClick={() => redirectToTaskDetail(render.id)}
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Assigned",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <div className="table-assigned">
+          <div className="profile">
+            <img src={record.profilePhoto} alt="" />
+          </div>
+          <div>{text}</div>
+        </div>
+      ),
+    },
+    {
+      title: "Priority",
+      dataIndex: "priority",
+      key: "priority",
+      render: (text) => <div className={`table-priority ${text}`}>{text}</div>,
+    },
+    {
+      title: "Estimation",
+      dataIndex: "estimation",
+      key: "estimation",
+    },
+  ];
 
   return (
     <div>
@@ -127,7 +148,10 @@ const Overview = () => {
                 </div>
                 <div className="ovr-card-container px-3">
                   {toDoTasks?.map((task) => (
-                    <OverviewCard task={task} />
+                    <OverviewCard
+                      task={task}
+                      redirectToTaskDetail={redirectToTaskDetail}
+                    />
                   ))}
                 </div>
               </div>

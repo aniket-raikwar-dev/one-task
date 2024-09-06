@@ -1,11 +1,21 @@
 import React, { useEffect } from "react";
+import projectStore from "../stores/projectStore";
+import { useNavigate } from "react-router-dom";
 
 const TaskCounterBox = ({ projectData }) => {
+  const { setSelectedProjectId } = projectStore();
+  const navigate = useNavigate();
+
   const countTaskByStatus = (statusType) => {
     return (
       projectData?.tasks?.filter((task) => task.status === statusType).length ||
       0
     );
+  };
+
+  const showSelectedProjectTasks = () => {
+    // setSelectedProjectId(projectData?._id);
+    // navigate("/boards");
   };
   useEffect(() => {
     console.log("projectData: ", projectData);
@@ -55,8 +65,12 @@ const TaskCounterBox = ({ projectData }) => {
           </h2>
         </div>
       </div>
+
       <div className="h-14 flex justify-center items-center">
-        <div className="btn-create justify-between">
+        <div
+          onClick={showSelectedProjectTasks}
+          className="btn-create justify-between"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

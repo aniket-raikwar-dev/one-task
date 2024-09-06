@@ -11,11 +11,13 @@ import Backlogs from "./Backlogs";
 import Teams from "./Teams";
 import CalendarPage from "./Calendar";
 import CreateNewProject from "./CreateNewProject";
-import OnBoarding from "./OnBoarding";
 import TaskDetails from "./TaskDetails";
 import SuccessPage from "./SuccessPage";
 import ProjectDetails from "./ProjectDetails";
 import TeamMemberDetails from "./TeamMemberDetails";
+import Settings from "./Settings";
+import UserDetailsEdits from "./UserDetailsEdits";
+import AboutOneTask from "./AboutOneTask";
 
 const LayoutPage = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -38,14 +40,13 @@ const LayoutPage = () => {
             />
             <Route path="/create-new-project" element={<CreateNewProject />} />
             <Route path="/edit-project/:id" element={<CreateNewProject />} />
-            <Route path="/onboarding" element={<OnBoarding />} />
+            <Route path="/edit-user-details" element={<UserDetailsEdits />} />
             <Route path="/task-details/:id" element={<TaskDetails />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/project-details/:id" element={<ProjectDetails />} />
-            <Route
-              path="/team-member/:id"
-              element={<TeamMemberDetails />}
-            />
+            <Route path="/team-member/:id" element={<TeamMemberDetails />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/about-onetask" element={<AboutOneTask />} />
           </Routes>
         </div>
       </Layout>

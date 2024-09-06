@@ -1,10 +1,14 @@
 import React from "react";
 import { formatDate } from "../utils/formatDate";
 
-const OverviewCard = ({ task }) => {
+const OverviewCard = ({ task, redirectToTaskDetail }) => {
   return (
-    <div key={task?._id} className="ovr-board-card">
-      <div style={{ height: "110px" }} >
+    <div
+      key={task?._id}
+      className="ovr-board-card"
+      onClick={() => redirectToTaskDetail(task?._id)}
+    >
+      <div style={{ height: "110px" }}>
         <div className="flex justify-between">
           <div className="date">
             {" "}

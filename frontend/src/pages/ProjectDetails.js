@@ -37,14 +37,6 @@ const ProjectDetails = () => {
     }
   };
 
-  const countNumberOfTask = (statusType) => {
-    let count = 0;
-    for (const task of projectData?.tasks) {
-      if (task?.status === statusType) count++;
-    }
-    return count;
-  };
-
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -137,16 +129,6 @@ const ProjectDetails = () => {
             <p>Description:</p>
             <p className="para">{projectData?.description}</p>
           </div>
-
-          {/* <div className="project-btn-box btn-left">
-            <button className="btn cancle">Delete</button>
-            <button
-              className="btn flex justify-center items-center"
-              type="submit"
-            >
-              Edit
-            </button>
-          </div> */}
         </div>
 
         <div className="w-[30%]">

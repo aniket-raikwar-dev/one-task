@@ -29,11 +29,12 @@ const Project = () => {
       } else setProjectSelected(false);
       setSelectedProjectId(id);
       setUserDetails(resp?.data?.data);
-      console.log("login user: ", resp?.data?.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  console.log("user details: ", userDetails);
 
   const getProjectsListData = async () => {
     setLoader(true);

@@ -98,7 +98,7 @@ const Signup = () => {
       localStorage.setItem("token", token);
       setTimeout(() => {
         setLoader(false);
-        navigate("/onboarding");
+        navigate("/edit-user-details");
       }, 3000);
     }
   };
@@ -173,7 +173,9 @@ const Signup = () => {
             <div className="flex justify-between">
               <Radio.Group onChange={onRadioChange} value={role}>
                 <Radio value={"manager"}>Product Manager</Radio>
-                <Radio className="ml-3" value={"developer"}>Software Developer</Radio>
+                <Radio className="ml-3" value={"developer"}>
+                  Software Developer
+                </Radio>
               </Radio.Group>
             </div>
           </div>

@@ -26,7 +26,7 @@ const roleOptions = [
   { label: "Software Tester", value: "Software Tester" },
 ];
 
-const OnBoarding = () => {
+const UserDetailsEdits = () => {
   const [loading, setLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
@@ -34,6 +34,8 @@ const OnBoarding = () => {
 
   const { userDetails, setUserDetails } = userStore();
   const navigate = useNavigate();
+
+  console.log("data: ", userDetails);
 
   const handleTechRoleChange = (value, setFieldValue) => {
     setFieldValue("techRole", value);
@@ -55,6 +57,8 @@ const OnBoarding = () => {
     }
     if (!values.phone) {
       errors.phone = "Phone number is required";
+    } else if (!/^\d{10}$/.test(values.phone)) {
+      errors.phone = "Phone number must be exactly 10 digits";
     }
 
     return errors;
@@ -97,6 +101,8 @@ const OnBoarding = () => {
       formData.set("phone", values.phone);
       formData.set("profilePhoto", fileList);
 
+      console.log("formData updated: ", formData);
+
       const resp = await api.put("/users/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -128,20 +134,23 @@ const OnBoarding = () => {
 
       <div className="basic-container">
         <Formik
+          enableReinitialize
           initialValues={{
-            firstName: "",
-            lastName: "",
-            emailID: userDetails?.email,
-            techRole: userDetails?.isManager ? "Product Manager" : "",
-            location: "",
-            phone: "",
+            firstName: userDetails?.firstName || "",
+            lastName: userDetails?.lastName || "",
+            emailId: userDetails?.email,
+            techRole: userDetails?.isManager
+              ? "Product Manager"
+              : userDetails?.techRole || "",
+            location: userDetails?.location || "",
+            phone: userDetails?.phone || "",
           }}
           validate={validate}
           onSubmit={(values, { setSubmitting }) => {
             updateUserDetail(values);
           }}
         >
-          {({ isSubmitting, setFieldValue, setFieldTouched }) => (
+          {({ values, isSubmitting, setFieldValue }) => (
             <Form>
               <div className="flex justify-center">
                 <Upload
@@ -169,8 +178,7 @@ const OnBoarding = () => {
                     className="project-input text-sm"
                     placeholder="Ex. James"
                     type="text"
-                    name="first-name"
-                    id="first-name"
+                    name="firstName"
                     onChange={(e) => {
                       setFieldValue("firstName", e.target.value);
                     }}
@@ -187,8 +195,7 @@ const OnBoarding = () => {
                     className="project-input text-sm"
                     placeholder="Ex. Smith"
                     type="text"
-                    name="last-name"
-                    id="last-name"
+                    name="lastName"
                     onChange={(e) => {
                       setFieldValue("lastName", e.target.value);
                     }}
@@ -202,31 +209,27 @@ const OnBoarding = () => {
               </div>
               <div className="outer-row">
                 <div className="field">
-                  <p className="text-sm" htmlFor="email-id">
-                    Email ID
-                  </p>
+                  <p className="text-sm">Email ID</p>
                   <Field
                     className="project-input text-sm"
                     placeholder="Ex. Jeff Bezos"
                     type="text"
-                    name="email-id"
-                    id="email-id"
+                    name="emailId"
                     value={userDetails?.email}
                     disabled={true}
                   />
                   <ErrorMessage
-                    name="emailID"
+                    name="emailId"
                     component="div"
                     className="form-err-msg"
                   />
                 </div>
                 <div className="field">
-                  <p className="text-sm" htmlFor="tech-role">
-                    Tech Role
-                  </p>
+                  <p className="text-sm">Tech Role</p>
                   <Select
                     mode="single"
                     id="tech-role"
+                    name="techRole"
                     className="project-input text-sm"
                     style={{ paddingLeft: "0px" }}
                     placeholder="Select Tech Role"
@@ -235,7 +238,9 @@ const OnBoarding = () => {
                     }
                     disabled={userDetails.isManager}
                     value={
-                      userDetails.isManager ? "Product Manager" : undefined
+                      userDetails.isManager
+                        ? "Product Manager"
+                        : values.techRole || undefined
                     }
                     options={roleOptions}
                     optionRender={(option) => (
@@ -251,15 +256,12 @@ const OnBoarding = () => {
               </div>
               <div className="outer-row">
                 <div className="field">
-                  <p className="text-sm" htmlFor="location">
-                    Location
-                  </p>
+                  <p className="text-sm">Location</p>
                   <Field
                     className="project-input text-sm"
                     placeholder="Ex. Los Angeles, NY, USA"
                     type="text"
                     name="location"
-                    id="location"
                     onChange={(e) => {
                       setFieldValue("location", e.target.value);
                     }}
@@ -272,15 +274,12 @@ const OnBoarding = () => {
                 </div>
 
                 <div className="field">
-                  <p className="text-sm" htmlFor="phone">
-                    Phone No.
-                  </p>
+                  <p className="text-sm">Phone No.</p>
                   <Field
                     className="project-input text-sm"
                     placeholder="Ex. +91 9827927273"
                     type="text"
                     name="phone"
-                    id="phone"
                     onChange={(e) => {
                       setFieldValue("phone", e.target.value);
                     }}
@@ -303,7 +302,7 @@ const OnBoarding = () => {
                     <img className="w-[30px]" src={Loader} alt="" />
                   ) : (
                     <>
-                      <p>Next</p>
+                      <p>Update</p>
                       <img className="w-[18px] ml-3" src={RightArrow} alt="" />
                     </>
                   )}
@@ -317,4 +316,4 @@ const OnBoarding = () => {
   );
 };
 
-export default OnBoarding;
+export default UserDetailsEdits;

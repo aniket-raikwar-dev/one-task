@@ -52,13 +52,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
     },
 
-    tasks: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Task",
-      },
-    ],
-
     role: {
       type: String,
       enum: ["manager", "developer"],
