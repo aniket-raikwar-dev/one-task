@@ -12,7 +12,6 @@ import {
 } from "../utils/taskOptionsData";
 import moment from "moment";
 import CustomPrioritySelect from "./CustomPrioritySelect";
-import CustomTeamSelect from "./CustomTeamSelect";
 import { Field, Formik, Form } from "formik";
 import api from "../services/api";
 import taskStore from "../stores/taskStore";
@@ -185,10 +184,10 @@ const NewTaskDrawer = ({
                   placeholder="-"
                   className="task-input"
                   options={teamOptions}
+                  value={values.assignee}
                   onChange={(value) => {
                     setFieldValue("assignee", value);
                   }}
-                  value={values.assignee}
                 />
               </div>
               <div className="task-row mt-1">

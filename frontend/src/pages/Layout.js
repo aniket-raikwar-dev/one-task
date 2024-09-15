@@ -16,8 +16,8 @@ import SuccessPage from "./SuccessPage";
 import ProjectDetails from "./ProjectDetails";
 import TeamMemberDetails from "./TeamMemberDetails";
 import Settings from "./Settings";
-import UserDetailsEdits from "./UserDetailsEdits";
 import AboutOneTask from "./AboutOneTask";
+import EditUserDetails from "./EditUserDetails";
 
 const LayoutPage = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -40,7 +40,7 @@ const LayoutPage = () => {
             />
             <Route path="/create-new-project" element={<CreateNewProject />} />
             <Route path="/edit-project/:id" element={<CreateNewProject />} />
-            <Route path="/edit-user-details" element={<UserDetailsEdits />} />
+            <Route path="/edit-user-details" element={<EditUserDetails />} />
             <Route path="/task-details/:id" element={<TaskDetails />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/project-details/:id" element={<ProjectDetails />} />

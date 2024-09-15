@@ -2,9 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const ProjectOrTeamMemberBox = ({ isProjectBox, data, title }) => {
-
-
-
   return (
     <div
       style={{ width: "100%", marginTop: "0px" }}
@@ -34,7 +31,11 @@ const ProjectOrTeamMemberBox = ({ isProjectBox, data, title }) => {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-[13px]">{project?.name}</p>
+                    <p className="font-semibold text-[13px]">
+                      {project?.name.length > 30
+                        ? `${project?.name.substring(0, 30)}. . .`
+                        : project?.name}
+                    </p>
                     <p className="text-xs  font-semibold mt-0.5">
                       PM:{" "}
                       <span className="text-[#3030fb]">
@@ -62,12 +63,16 @@ const ProjectOrTeamMemberBox = ({ isProjectBox, data, title }) => {
               <div className="py-2.5">
                 <div className="flex justify-between w-full">
                   <div className="flex">
-                    <div className="w-10 h-10 bg-red-200 rounded-full mr-2">
-                      <img
-                        className="w-full h-full bg-red-200 rounded-full"
-                        src={member?.profilePhoto}
-                        alt=""
-                      />
+                    <div className="w-10 h-10 bg-[#3030fb] rounded-full mr-2 flex justify-center items-center">
+                      {member?.profilePhoto ? (
+                        <img
+                          className="w-full h-full rounded-full"
+                          src={member?.profilePhoto}
+                          alt=""
+                        />
+                      ) : (
+                        <p className="text-white text-[15px]">{`${member?.firstName[0]}${member?.lastName[0]}`}</p>
+                      )}
                     </div>
                     <div>
                       <p className="font-semibold text-[13px]">

@@ -12,21 +12,9 @@ import RightArrow from "../images/rightArrow.png";
 import userStore from "../stores/userStore";
 import { getToken } from "../utils/getToken";
 import { useNavigate } from "react-router-dom";
+import { roleOptions } from "../utils/taskOptionsData";
 
-const roleOptions = [
-  { label: "Frontend Developer", value: "Frontend Developer" },
-  {
-    label: "Backend Developer (Node Js)",
-    value: "Backend Developer (Node Js)",
-  },
-  { label: "Backend Developer (Java)", value: "Backend Developer (Java)" },
-  { label: "Full Stack Developer", value: "Full Stack Developer" },
-  { label: "DevOps Engineer", value: "DevOps Engineer" },
-  { label: "Cloud Engineer", value: "Cloud Engineer" },
-  { label: "Software Tester", value: "Software Tester" },
-];
-
-const UserDetailsEdits = () => {
+const EditUserDetails = () => {
   const [loading, setLoading] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
@@ -316,4 +304,4 @@ const UserDetailsEdits = () => {
   );
 };
 
-export default UserDetailsEdits;
+export default EditUserDetails;

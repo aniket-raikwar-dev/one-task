@@ -7,6 +7,7 @@ export const projectOptions = [
   { label: "Blogging Platform", value: "Blogging Platform" },
   { label: "Project Management Tools", value: "Project Management Tool" },
   { label: "Social Media Platform", value: "Social Media Platform" },
+  { label: "Hardware Project", value: "Hardware Project" },
   { label: "SAAS Platform", value: "SAAS Platform" },
   { label: "Job Portal", value: "Job Portal" },
   { label: "Travel Booking Site", value: "Travel Booking Site" },

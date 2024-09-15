@@ -81,25 +81,29 @@ const Signup = () => {
 
   const handleRegister = async () => {
     setLoader(true);
-    const errorMsg = checkValidations();
-    if (errorMsg) {
-      setLoader(false);
-      setShowErrorMessage(errorMsg);
-    } else {
-      const resp = await api.post("/users/register", {
-        email,
-        password,
-        role,
-      });
-      console.log("Proceed with regged in: ", resp);
-      const { data, token } = resp.data;
-      console.log("data: ", data);
-      setUserDetails(data);
-      localStorage.setItem("token", token);
-      setTimeout(() => {
+    try {
+      const errorMsg = checkValidations();
+      if (errorMsg) {
         setLoader(false);
-        navigate("/edit-user-details");
-      }, 3000);
+        setShowErrorMessage(errorMsg);
+      } else {
+        const resp = await api.post("/users/register", {
+          email,
+          password,
+          role,
+        });
+        console.log("Proceed with reg in: ", resp);
+        const { data, token } = resp.data;
+        console.log("data: ", data);
+        setUserDetails(data);
+        localStorage.setItem("token", token);
+        setTimeout(() => {
+          setLoader(false);
+          navigate("/edit-user-details");
+        }, 3000);
+      }
+    } catch (error) {
+      console.log("error: ", error);
     }
   };
 

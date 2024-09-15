@@ -13,7 +13,6 @@ import Teams from "./pages/Teams";
 import Signup from "./pages/Signup";
 import CalendarPage from "./pages/Calendar";
 import CreateNewProject from "./pages/CreateNewProject";
-import UserDetailsEdits from "./pages/UserDetailsEdits";
 import TaskDetails from "./pages/TaskDetails";
 import Project from "./pages/Project";
 import SuccessPage from "./pages/SuccessPage";
@@ -22,6 +21,7 @@ import TeamMemberDetails from "./pages/TeamMemberDetails";
 import Settings from "./pages/Settings";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AboutOneTask from "./pages/AboutOneTask";
+import EditUserDetails from "./pages/EditUserDetails";
 
 const router = createBrowserRouter([
   {
@@ -110,7 +110,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <UserDetailsEdits />,
+        element: <EditUserDetails />,
       },
     ],
   },

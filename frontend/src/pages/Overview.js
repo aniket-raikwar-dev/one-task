@@ -8,6 +8,7 @@ import api from "../services/api";
 import { Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import taskStore from "../stores/taskStore";
+import { formatProfileName } from "../utils/formatProfileName";
 
 const Overview = () => {
   const [timelineView, setTimelineView] = useState("Day");
@@ -42,6 +43,8 @@ const Overview = () => {
         estimation: item.estimation,
         profilePhoto: item.assignee.profilePhoto,
         name: item.assignee.fullName,
+        firstName: item.assignee.firstName,
+        lastName: item.assignee.lastName,
       }));
 
       setAllTasks(data);
@@ -83,7 +86,11 @@ const Overview = () => {
       render: (text, record) => (
         <div className="table-assigned">
           <div className="profile">
-            <img src={record.profilePhoto} alt="" />
+            {record?.profilePhoto ? (
+              <img src={record.profilePhoto} alt="" />
+            ) : (
+              <p>{`${record.firstName[0]}${record.lastName[0]}`}</p>
+            )}
           </div>
           <div>{text}</div>
         </div>

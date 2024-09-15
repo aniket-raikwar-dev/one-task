@@ -21,9 +21,9 @@ export const progressOptions = [
 ];
 
 export const priorityOptions = [
-  { label: "LOW", value: "low", color: "#7c70fc" },
-  { label: "NORMAL P1", value: "normal p1", color: "#337eef" },
-  { label: "NORMAL P2", value: "normal p2", color: "#337eef" },
+  { label: "LOW", value: "low", color: "#3e6af0" },
+  { label: "NORMAL P1", value: "normal p1", color: "#0aba71" },
+  { label: "NORMAL P2", value: "normal p2", color: "#0aba71" },
   { label: "HIGH P1", value: "high p1", color: "#f0633c" },
   { label: "HIGH P2", value: "high p2", color: "#f0633c" },
 ];
@@ -54,4 +54,38 @@ export const guildOptions = [
   { label: "IT Support", value: "IT Support" },
   { label: "Security Team", value: "Security Team" },
   { label: "Finance Team", value: "Finance Team" },
+];
+
+export const roleOptions = [
+  {
+    label: "Frontend Developer",
+    value: "Frontend Developer",
+    guild: "Frontend Team",
+  },
+  {
+    label: "Backend Developer (Node Js)",
+    value: "Backend Developer (Node Js)",
+    guild: "Backend Team",
+  },
+  {
+    label: "Backend Developer (Java)",
+    value: "Backend Developer (Java)",
+    guild: "Backend Team",
+  },
+  {
+    label: "Full Stack Developer",
+    value: "Full Stack Developer",
+    guild: "Full Stack Team",
+  },
+  { label: "DevOps Engineer", value: "DevOps Engineer", guild: "DevOps Team" },
+  {
+    label: "Cloud Engineer",
+    value: "Cloud Engineer",
+    guild: "IT Support Team",
+  },
+  {
+    label: "Software Tester",
+    value: "Software Tester",
+    guild: "Testing Unit Team",
+  },
 ];

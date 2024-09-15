@@ -8,47 +8,12 @@ import SearchBar from "../components/SearchBar";
 import api from "../services/api";
 import projectStore from "../stores/projectStore";
 
-const dummyEvents = [
-  {
-    id: "1",
-    title: "Project Kickoff Meeting",
-    start: "2024-08-10T10:00:00",
-    end: "2024-08-10T11:30:00",
-  },
-  {
-    id: "2",
-    title: "Client Presentation",
-    start: "2024-08-15T14:00:00",
-    end: "2024-08-15T16:00:00",
-  },
-  {
-    id: "3",
-    title: "Team Building Event",
-    start: "2024-08-20",
-    end: "2024-08-21",
-    allDay: true,
-  },
-  {
-    id: "4",
-    title: "Product Launch",
-    start: "2024-08-25T09:00:00",
-    end: "2024-08-25T18:00:00",
-  },
-  {
-    id: "5",
-    title: "Sprint Planning",
-    start: "2024-08-05T13:00:00",
-    end: "2024-08-05T15:00:00",
-    recurring: true,
-    daysOfWeek: [1],
-  },
-];
-
 const customClasses = [
-  "event-purple",
-  "event-green",
+  "event-darkblue",
   "event-blue",
+  "event-purple",
   "event-orange",
+  "event-green",
 ];
 
 const CalendarPage = ({ collapsed }) => {
@@ -58,8 +23,6 @@ const CalendarPage = ({ collapsed }) => {
   const [calendarDate, setCalendarDate] = useState("");
 
   const { selectedProjectId } = projectStore();
-
-  console.log("date: ", calendarDate);
 
   const changeCalendarView = (view) => {
     setCalendarView(view);

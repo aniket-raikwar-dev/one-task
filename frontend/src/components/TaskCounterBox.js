@@ -3,8 +3,6 @@ import projectStore from "../stores/projectStore";
 import { useNavigate } from "react-router-dom";
 
 const TaskCounterBox = ({ projectData }) => {
-  const { setSelectedProjectId } = projectStore();
-  const navigate = useNavigate();
 
   const countTaskByStatus = (statusType) => {
     return (
@@ -13,10 +11,7 @@ const TaskCounterBox = ({ projectData }) => {
     );
   };
 
-  const showSelectedProjectTasks = () => {
-    // setSelectedProjectId(projectData?._id);
-    // navigate("/boards");
-  };
+
   useEffect(() => {
     console.log("projectData: ", projectData);
   }, [projectData]);
@@ -68,7 +63,7 @@ const TaskCounterBox = ({ projectData }) => {
 
       <div className="h-14 flex justify-center items-center">
         <div
-          onClick={showSelectedProjectTasks}
+         
           className="btn-create justify-between"
         >
           <svg

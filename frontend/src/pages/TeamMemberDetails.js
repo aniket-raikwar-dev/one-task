@@ -5,10 +5,12 @@ import TaskCounterBox from "../components/TaskCounterBox";
 import ProjectOrTeamMemberBox from "../components/ProjectOrTeamMemberBox";
 import userStore from "../stores/userStore";
 import { formatProfileName } from "../utils/formatProfileName";
+import { guildOptions, roleOptions } from "../utils/taskOptionsData";
 
 const TeamMemberDetails = () => {
   const [memberData, setMemberData] = useState(null);
-  const [userTaskData, setUserTaskData] = useState({});
+  const [userTaskData, setUserTaskData] = useState(null);
+  const [taskLength, setTaskLength] = useState(0);
   const { userDetails } = userStore();
   const { id } = useParams();
 
@@ -30,11 +32,15 @@ const TeamMemberDetails = () => {
       );
       return acc.concat(userTasks);
     }, []);
-
-    setUserTaskData({ tasks });
+    setTaskLength(tasks.length);
+    setUserTaskData({ tasks: tasks });
   };
 
-  console.log("memberData: ", memberData);
+  const findMatchingGuild = (techRole) => {
+    if (techRole === "Product Manager") return techRole;
+    const data = roleOptions.find((role) => role.label === techRole);
+    return data?.guild;
+  };
   console.log("setUserTaskData: ", userTaskData);
 
   useEffect(() => {
@@ -110,11 +116,13 @@ const TeamMemberDetails = () => {
           <div className="flex justify-between border-t py-10">
             <div className="w-2/3">
               <p>Task Assigned:</p>
-              <h3 className="font-semibold">17</h3>
+              <h3 className="font-semibold">{taskLength}</h3>
             </div>
             <div className="w-2/4">
-              <p>Email ID:</p>
-              <h3 className="font-semibold">richiso@onetask.com</h3>
+              <p>Guild:</p>
+              <h3 className="font-semibold">
+                {findMatchingGuild(memberData?.techRole)}
+              </h3>
             </div>
           </div>
         </div>
@@ -124,7 +132,7 @@ const TeamMemberDetails = () => {
             isProjectBox={true}
             data={memberData}
           />
-          <TaskCounterBox taskData={userTaskData} />
+          <TaskCounterBox projectData={userTaskData} />
         </div>
       </div>
     </div>

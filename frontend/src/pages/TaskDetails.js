@@ -2,7 +2,6 @@ import { DatePicker, Select, Space } from "antd";
 import React, { useEffect, useState, useCallback } from "react";
 import taskStore from "../stores/taskStore";
 import { Field, Formik, Form } from "formik";
-import CustomTeamSelect from "../components/CustomTeamSelect";
 import { Progress } from "antd";
 import dayjs from "dayjs";
 import {
@@ -26,6 +25,7 @@ import Loader from "../components/Loader";
 import TaskCommentPreview from "../components/TaskCommentPreview";
 import moment from "moment";
 import { ProgressBar } from "react-loader-spinner";
+import CustomAssigneeSelect from "../components/CustomAssigneeSelect";
 
 const TaskDetails = () => {
   const [taskData, setTaskData] = useState({});
@@ -385,7 +385,7 @@ const TaskDetails = () => {
                   <div className="body">
                     <div className="task-row">
                       <p>Assignee :</p>
-                      <CustomTeamSelect
+                      <CustomAssigneeSelect
                         name="assignee"
                         mode="single"
                         placeholder="-"
@@ -463,7 +463,7 @@ const TaskDetails = () => {
 
                     <div className="task-row">
                       <p>Reportee :</p>
-                      <CustomTeamSelect
+                      <CustomAssigneeSelect
                         name="reportee"
                         mode="single"
                         placeholder="-"

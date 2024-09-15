@@ -70,21 +70,26 @@ const Login = () => {
 
   const handleLogin = async () => {
     setLoader(true);
-    const errorMsg = checkValidations();
-    if (errorMsg) {
-      setShowErrorMessage(errorMsg);
-      setLoader(false);
-    } else {
-      const resp = await api.post("/users/login", { email, password });
-      console.log("Proceed with logged in: ", resp);
-      const { data, token } = resp.data;
-      setUserDetails(data);
-      localStorage.setItem("token", token);
-
-      setTimeout(() => {
+    try {
+      const errorMsg = checkValidations();
+      if (errorMsg) {
+        setShowErrorMessage(errorMsg);
         setLoader(false);
-        navigate("/projects");
-      }, 2000);
+      } else {
+        const resp = await api.post("/users/login", { email, password });
+        console.log("Proceed with logged in: ", resp);
+        const { data, token } = resp.data;
+        setUserDetails(data);
+        localStorage.setItem("token", token);
+
+        setTimeout(() => {
+          setLoader(false);
+          navigate("/projects");
+        }, 2000);
+      }
+    } catch (error) {
+      setShowErrorMessage("Invalid Login Credentials!");
+      setLoader(false);
     }
   };
 

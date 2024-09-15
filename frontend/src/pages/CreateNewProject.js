@@ -238,13 +238,22 @@ const CreateNewProject = () => {
                       const option = teamMembers?.find(
                         (opt) => opt?.value === value
                       );
+                      console.log("label: ", label);
                       return (
                         <div className="flex py-1 px-2 items-center mr-3 bg-[#eeeeee] rounded">
-                          <img
-                            className="w-6 h-6 rounded-full mr-2"
-                            src={option?.profile}
-                            alt=""
-                          />
+                          {option?.profile ? (
+                            <img
+                              className="w-6 h-6 rounded-full mr-2"
+                              src={option?.profile}
+                              alt=""
+                            />
+                          ) : (
+                            <div className="w-6 h-6 bg-[#3030fb] rounded-full text-white flex justify-center items-center mr-2 text-xs">
+                              {`${label.split(" ")[0][0]}${
+                                label.split(" ")[1][0]
+                              }`}
+                            </div>
+                          )}
                           <span>{label}</span>
                           <span
                             onClick={onClose}
@@ -259,11 +268,20 @@ const CreateNewProject = () => {
                     }}
                     optionRender={(option) => (
                       <div className="flex py-1">
-                        <img
-                          className="w-6 h-6 rounded-full mr-3"
-                          src={option.data.profile}
-                          alt=""
-                        />
+                        {option.data.profile ? (
+                          <img
+                            className="w-6 h-6 rounded-full mr-3"
+                            src={option.data.profile}
+                            alt=""
+                          />
+                        ) : (
+                          <div className="w-6 h-6 bg-[#3030fb] rounded-full text-white flex justify-center items-center mr-2 text-xs">
+                            {`${option.data.label.split(" ")[0][0]}${
+                              option.data.label.split(" ")[1][0]
+                            }`}
+                          </div>
+                        )}
+
                         {option.data.label}
                       </div>
                     )}

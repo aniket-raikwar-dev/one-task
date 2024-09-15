@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Loader from "../images/loader.gif";
 import api from "../services/api";
 import { Link } from "react-router-dom";
+import { formatProfileName } from "../utils/formatProfileName";
 
 const ProjectCard = ({ project, selectedProjectId, setSelectedProjectId }) => {
   const [loader, setLoader] = useState(false);
@@ -35,7 +36,11 @@ const ProjectCard = ({ project, selectedProjectId, setSelectedProjectId }) => {
                 <div
                   className={index === 0 ? "user-circle" : "user-circle-rest"}
                 >
-                  <img src={member?.profilePhoto} alt="" />
+                  {member?.profilePhoto ? (
+                    <img src={member?.profilePhoto} alt="" />
+                  ) : (
+                    <p>{`${member?.firstName[0]}${member?.lastName[0]}`}</p>
+                  )}
                 </div>
               ))}
             </div>

@@ -65,8 +65,12 @@ const BoardCard = ({ task, showDrawer }) => {
       <div className="board-card-bottom">
         {task?.assignee ? (
           <div className="table-assigned">
-            <div className="profile">
-              <img src={task?.assignee?.profilePhoto} alt="" />
+            <div className="profile sm">
+              {task?.assignee?.profilePhoto ? (
+                <img src={task?.assignee?.profilePhoto} alt="" />
+              ) : (
+                <p className="text-xs">{`${task?.assignee?.firstName[0]}${task?.assignee?.lastName[0]}`}</p>
+              )}
             </div>
             <div className="fz-12">{task?.assignee?.fullName}</div>
           </div>
