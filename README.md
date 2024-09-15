@@ -1,4 +1,4 @@
-![Screenshot 2024-09-14 181948](https://github.com/user-attachments/assets/0f9989eb-6390-4a2c-b8c5-2d0c709dedb0)# OneTask: Project Management System ⚡
+# OneTask: Project Management System ⚡
 
 OneTask is a powerful, all-in-one project management system that combines the best features of Jira, Notion, and Asana. Designed to streamline workflows, enhance collaboration, and boost productivity, OneTask is the go-to solution for teams of all sizes and industries.
 
