@@ -7,12 +7,15 @@ import projectStore from "../stores/projectStore";
 import taskStore from "../stores/taskStore";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { debounce } from "lodash";
+import TaskSorter from "../components/TaskSorter";
 
 const Boards = () => {
   const [open, setOpen] = useState(false);
   const [dependenciesOptions, setDependenciesOptions] = useState([]);
   const [isNewTask, setIsNewTask] = useState("");
   const [teamOptions, setTeamOptions] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const [columns, setColumns] = useState({
     "To Do": [],
     "In Progress": [],
@@ -131,17 +134,43 @@ const Boards = () => {
     getTasksBySelectedProject();
   };
 
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const filterAndSortTasks = (tasks) => {
+    let filteredTasks = tasks;
+
+    if (selectedMembers.length > 0) {
+      filteredTasks = filteredTasks.filter((task) =>
+        selectedMembers.includes(task?.assignee?._id)
+      );
+    }
+
+    if (searchInput) {
+      filteredTasks = filteredTasks.filter((task) =>
+        task?.title.toLowerCase().includes(searchInput.toLowerCase())
+      );
+    }
+
+    return filteredTasks;
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Boards</h2>
         <div className="flex">
-          <SearchBar />
-          <div
-            className="btn-create ml-3"
-            onClick={() => showDrawer(true)}
-            // onClick={updateTaskStatusUsingButton}
-          >
+          <TaskSorter
+            teamMembers={teamOptions}
+            selectedMembers={selectedMembers}
+            setSelectedMembers={setSelectedMembers}
+          />
+          <SearchBar
+            searchInput={searchInput}
+            handleSearchInputChange={handleSearchInputChange}
+          />
+          <div className="btn-create ml-3" onClick={() => showDrawer(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -174,7 +203,7 @@ const Boards = () => {
                     ref={provided.innerRef}
                     className="draggable-area"
                   >
-                    {tasks.map((task, index) => (
+                    {filterAndSortTasks(tasks).map((task, index) => (
                       <Draggable
                         key={task._id}
                         draggableId={task._id}

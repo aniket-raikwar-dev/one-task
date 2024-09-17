@@ -1,9 +1,15 @@
-import React from 'react'
+import React from "react";
 
-const SearchBar = () => {
+const SearchBar = ({ searchInput, handleSearchInputChange }) => {
   return (
     <div className="search-bar">
-      <input type="text" placeholder='Search...' />
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchInput}
+        name={searchInput}
+        onChange={handleSearchInputChange}
+      />
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -15,6 +21,6 @@ const SearchBar = () => {
       </div>
     </div>
   );
-}
+};
 
-export default SearchBar
+export default SearchBar;

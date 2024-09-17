@@ -16,6 +16,7 @@ const Overview = () => {
   const [toDoTasks, setToDoTasks] = useState([]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
 
+
   const { isProjectSelected, projectStoreList, selectedProjectId } =
     projectStore();
   const { setTaskDetails } = taskStore();
@@ -54,6 +55,7 @@ const Overview = () => {
       console.log(error);
     }
   };
+
 
   const redirectToTaskDetail = (id) => {
     const task = allTasks.find((task) => task?._id === id);

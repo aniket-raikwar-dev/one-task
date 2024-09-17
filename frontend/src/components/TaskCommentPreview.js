@@ -71,7 +71,11 @@ const TaskCommentPreview = ({
               <div className="flex justify-between items-start">
                 <div className="flex">
                   <div className="comment-profile">
-                    <img src={comment?.user?.profilePhoto} alt="" />
+                    {comment?.user?.profilePhoto ? (
+                      <img src={comment?.user?.profilePhoto} alt="" />
+                    ) : (
+                      <p>{comment?.user?.firstName[0]}</p>
+                    )}
                   </div>
                   <div className="ml-3">
                     <p className="font-semibold text-[13px] text-[#3030fb]">
@@ -159,7 +163,11 @@ const TaskCommentPreview = ({
 
       <div className="flex items-center mt-10 pl-3">
         <div className="comment-profile">
-          <img src={userDetails?.profilePhoto} alt="" />
+          {userDetails?.profilePhoto ? (
+            <img src={userDetails?.profilePhoto} alt="" />
+          ) : (
+            <p>{`${userDetails?.firstName[0]}${userDetails?.lastName[0]}`}</p>
+          )}
         </div>
         <div className="comment-box">
           <input

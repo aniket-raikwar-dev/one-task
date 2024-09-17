@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Loader from "../images/loader.gif";
 import api from "../services/api";
 import { Link } from "react-router-dom";
-import { formatProfileName } from "../utils/formatProfileName";
+import UserProfilePicCircle from "./UserProfilePicCircle";
 
 const ProjectCard = ({ project, selectedProjectId, setSelectedProjectId }) => {
   const [loader, setLoader] = useState(false);
@@ -29,22 +29,7 @@ const ProjectCard = ({ project, selectedProjectId, setSelectedProjectId }) => {
     <div className="project-box">
       <div>
         <div className="flex justify-between">
-          <div>
-            <p className="card-top-text">Teams:</p>
-            <div className="flex mt-1">
-              {project?.teamMembers?.map((member, index) => (
-                <div
-                  className={index === 0 ? "user-circle" : "user-circle-rest"}
-                >
-                  {member?.profilePhoto ? (
-                    <img src={member?.profilePhoto} alt="" />
-                  ) : (
-                    <p>{`${member?.firstName[0]}${member?.lastName[0]}`}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          <UserProfilePicCircle project={project} />
           <div>
             <p className="card-top-text">Deadline:</p>
             <div className="deadline">

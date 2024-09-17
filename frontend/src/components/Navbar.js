@@ -99,7 +99,7 @@ const Navbar = ({ collapsed, setCollapsed }) => {
           </svg>
         </Link>
 
-        <Dropdown overlay={items} placement="bottomRight" trigger={["click"]}>
+        <Dropdown overlay={items} placement="bottomRight" >
           <div className="nav-profile ml-4">
             {userDetails?.profilePhoto ? (
               <img src={userDetails?.profilePhoto} alt="" />

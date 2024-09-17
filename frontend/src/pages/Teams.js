@@ -7,6 +7,8 @@ import { formatProfileName } from "../utils/formatProfileName";
 
 const Teams = () => {
   const [teamsData, setTeamsData] = useState([]);
+  const [displayTeamData, setDisplayTeamData] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
 
   const getAllTeamMembersData = async () => {
     try {
@@ -25,9 +27,19 @@ const Teams = () => {
         lastName: item.lastName,
       }));
       setTeamsData(formattedData);
+      setDisplayTeamData(formattedData);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleSearchInputChange = (e) => {
+    let input = e.target.value;
+    const filteredMembers = teamsData.filter((member) =>
+      member.name.toLowerCase().includes(input.toLowerCase())
+    );
+    setSearchInput(input);
+    setDisplayTeamData(filteredMembers);
   };
 
   useEffect(() => {
@@ -107,14 +119,17 @@ const Teams = () => {
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Teams</h2>
         <div>
-          <SearchBar />
+          <SearchBar
+            searchInput={searchInput}
+            handleSearchInputChange={handleSearchInputChange}
+          />
         </div>
       </div>
       <div className="scrollabel-container">
         <div>
           <Table
             columns={columns}
-            dataSource={teamsData}
+            dataSource={displayTeamData}
             rowClassName={() => "custom-table-row"}
             pagination={{ pageSize: 6 }}
           />

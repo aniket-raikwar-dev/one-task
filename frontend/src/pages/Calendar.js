@@ -7,6 +7,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import SearchBar from "../components/SearchBar";
 import api from "../services/api";
 import projectStore from "../stores/projectStore";
+import taskStore from "../stores/taskStore";
+import { useNavigate } from "react-router-dom";
 
 const customClasses = [
   "event-darkblue",
@@ -17,12 +19,19 @@ const customClasses = [
 ];
 
 const CalendarPage = ({ collapsed }) => {
-  const calendarRef = useRef(null);
   const [calendarView, setCalendarView] = useState("dayGridMonth");
+  const [displayEvents, setDisplayEvents] = useState([]);
   const [events, setEvents] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const [calendarDate, setCalendarDate] = useState("");
 
+  const calendarRef = useRef(null);
+
   const { selectedProjectId } = projectStore();
+  const { setTaskDetails } = taskStore();
+
+  const navigate = useNavigate();
 
   const changeCalendarView = (view) => {
     setCalendarView(view);
@@ -37,11 +46,21 @@ const CalendarPage = ({ collapsed }) => {
       const resp = await api.get(`/task/${selectedProjectId}`);
       const { data } = resp?.data;
       const eventData = formatCalendarEvent(data);
+      setDisplayEvents(eventData);
       setEvents(eventData);
-      console.log("data: ", eventData);
+      setTasks(data);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleSearchInputChange = (e) => {
+    let input = e.target.value;
+    const filteredEvents = events.filter((event) =>
+      event.title.toLowerCase().includes(input.toLowerCase())
+    );
+    setSearchInput(input);
+    setDisplayEvents(filteredEvents);
   };
 
   const formatCalendarEvent = (events) => {
@@ -55,6 +74,13 @@ const CalendarPage = ({ collapsed }) => {
     }));
 
     return formattedEvent;
+  };
+
+  const handleEventClick = (e) => {
+    const eventId = e.event._def.publicId.split("-")[1];
+    const task = tasks.find((task) => task?._id === eventId);
+    setTaskDetails(task);
+    navigate(`/task-details/${eventId}`);
   };
 
   useEffect(() => {
@@ -99,7 +125,10 @@ const CalendarPage = ({ collapsed }) => {
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="page-title">Calendar</h2>
         <div className="flex">
-          <SearchBar />
+          <SearchBar
+            searchInput={searchInput}
+            handleSearchInputChange={handleSearchInputChange}
+          />
           <div className="date-box ml-3">
             <div className="btn" id="calendar-prev-btn">
               <svg
@@ -124,8 +153,8 @@ const CalendarPage = ({ collapsed }) => {
 
           <div className="toggle-timeline cal-view-btn">
             <div
-              onClick={() => changeCalendarView("timeGridWeek")}
-              className={calendarView === "timeGridWeek" ? "selected" : ""}
+              onClick={() => changeCalendarView("dayGridWeek")}
+              className={calendarView === "dayGridWeek" ? "selected" : ""}
             >
               Week
             </div>
@@ -149,30 +178,17 @@ const CalendarPage = ({ collapsed }) => {
           ]}
           initialView={calendarView}
           headerToolbar={false}
-          events={events}
-          // eventContent={(eventInfo) => (
-          //   <>
-          //     <b>{eventInfo.timeText}</b>
-          //     <i>{eventInfo.event.title}</i>
-          //   </>
-          // )}
-          // eventClick={(info) => {
-          //   alert(
-          //     `Event: ${info.event.title}\nStart: ${info.event.start}\nEnd: ${
-          //       info.event.end || "N/A"
-          //     }`
-          //   );
-          // }}
+          events={displayEvents}
+          eventClick={handleEventClick}
           views={{
-            timeGridWeek: {
-              type: "timeGrid",
+            dayGridWeek: {
+              type: "dayGridWeek",
               duration: { weeks: 1 },
               buttonText: "week",
-              slotLabelFormat: {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true,
-              },
+              allDaySlot: true,
+              allDayContent: "All-day",
+              dayMaxEvents: true,
+              dayMaxEventRows: true,
             },
             dayGridMonth: {
               type: "dayGrid",
