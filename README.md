@@ -1,4 +1,4 @@
-## OneTask: Project Management System ⚡
+# OneTask: Project Management System⚡
 
 OneTask is a powerful, all-in-one project management system that combines the best features of Jira, Notion, and Asana. Designed to streamline workflows, enhance collaboration, and boost productivity, OneTask is the go-to solution for teams of all sizes and industries.
 
@@ -6,14 +6,14 @@ OneTask is a powerful, all-in-one project management system that combines the be
 
 #### Project Live Link: https://onetask-frontend.vercel.app/login
 
-Credential (Product Manager) -
+#### Credentials: 
+1. Product Manager
 Email: aniket@onetask.com
 Password: 12345678
 
-Credential (Software Developer) -
+2. Ssoftware Developer
 Email: alessia@onetask.com
 Password: 12345678
-
 
 Tech Stack: React Js, JavaScript, CSS, Tailwind CSS, Ant Design, Full Calendar, Node Js, Express Js, JWT, Cloudinary, Mongo DB
 
