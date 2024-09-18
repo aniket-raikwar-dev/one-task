@@ -16,7 +16,7 @@ OneTask is a powerful, all-in-one project management system that combines the be
 - Email: alessia@onetask.com (Software Developer)
 - Password: 12345678
   
-Tech Stack: React Js, JavaScript, CSS, Tailwind CSS, Ant Design, Full Calendar, Node Js, Express Js, JWT, Cloudinary, Mongo DB
+Tech Stack: React Js, JavaScript, Zustand, CSS, Tailwind CSS, Ant Design, Full Calendar, Node Js, Express Js, JWT, Cloudinary, Mongo DB
 
 #### 1. Login Page UI: 
 ![Screenshot 2024-09-15 103433](https://github.com/user-attachments/assets/09fde269-371a-4f60-b166-c9dc20a76546)
