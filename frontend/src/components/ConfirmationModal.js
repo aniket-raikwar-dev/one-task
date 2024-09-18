@@ -10,7 +10,12 @@ const ConfirmationModal = ({
 }) => {
   return (
     <div>
-      <Modal title={`Delete ${title}`} open={isModalOpen} footer={null}>
+      <Modal
+        title={`Delete ${title}`}
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+      >
         <div className="w-full flex items-center flex-col">
           <img className="w-2/5 my-12" src={ConfirmationImg} alt="" />
           <h3 className="font-bold text-lg text-[#3030fb]">Are You Sure!</h3>
