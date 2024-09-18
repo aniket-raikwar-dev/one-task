@@ -204,16 +204,22 @@ const Login = () => {
           </p>
         </div>
         <img className="auth-img" src={LoginAimator} alt="" />
-        <div className="creative-box-2">
-          <p>GitHub Project Repo</p>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="rgba(255,255,255,1)"
-          >
-            <path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"></path>
-          </svg>
-        </div>
+        <a
+          href="https://drive.google.com/file/d/1pD9Mkh-lFxW4NYK39rNqGYnPGY_Fw1Cn/view?usp=sharing"
+          target="_black"
+          rel="noreferrer"
+        >
+          <div className="creative-box-2">
+            <p>OneTask Product Demo</p>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="rgba(255,255,255,1)"
+            >
+              <path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"></path>
+            </svg>
+          </div>
+        </a>
       </div>
     </div>
   );
