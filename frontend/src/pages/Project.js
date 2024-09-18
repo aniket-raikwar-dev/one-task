@@ -5,7 +5,6 @@ import userStore from "../stores/userStore";
 import projectStore from "../stores/projectStore";
 import api from "../services/api";
 import ProjectNotCreated from "../components/ProjectNotCreated";
-import { Grid } from "react-loader-spinner";
 import Loader from "../components/Loader";
 
 const Project = () => {

@@ -76,7 +76,10 @@ const Login = () => {
         setShowErrorMessage(errorMsg);
         setLoader(false);
       } else {
-        const resp = await api.post("/users/login", { email, password });
+        const resp = await axios.post(
+          "https://one-task-steel.vercel.app/api/v1/users/login",
+          { email, password }
+        );
         console.log("Proceed with logged in: ", resp);
         const { data, token } = resp.data;
         setUserDetails(data);
